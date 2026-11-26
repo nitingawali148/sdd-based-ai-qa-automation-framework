@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SDD QA Automation Dashboard</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%236a4ce2'/><text x='16' y='22' font-size='16' text-anchor='middle' fill='white' font-family='Arial' font-weight='700'>Q</text></svg>">
+<link rel="stylesheet" href="/static/css/app.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo" aria-hidden="true">Q</div>
+    <div>
+      <h1>SDD QA Automation Dashboard</h1>
+      <p class="sub">Spec-Driven Development · CrewAI agents · Playwright · Pytest · HTTPX</p>
+    </div>
+  </div>
+  <div class="top-right">
+    <span id="fw-pill" class="pill pill-muted" title="">Connecting…</span>
+    <button id="theme-btn" class="icon-btn" aria-label="Toggle dark mode" title="Toggle theme">◐</button>
+  </div>
+</header>
+
+<nav class="tabs" role="tablist">
+  <button class="tab active" data-tab="live" role="tab">⚡ Live Execution</button>
+  <button class="tab" data-tab="features" role="tab">🧩 Framework Features</button>
+  <button class="tab" data-tab="reports" role="tab">📈 Reports &amp; History</button>
+</nav>
+
+<main>
+<!-- ============================================================== LIVE -->
+<section id="tab-live" class="tab-panel">
+  <div class="card controls">
+    <div class="controls-row">
+      <div class="picker" id="picker">
+        <button id="picker-btn" class="picker-btn" aria-haspopup="listbox" aria-expanded="false">
+          <span>🧪 <strong id="picker-count">0</strong> test case(s) selected</span><span class="caret">▾</span>
+        </button>
+        <div id="picker-panel" class="picker-panel" hidden>
+          <div class="picker-tools">
+            <input id="picker-search" type="search" placeholder="Search ID, title, feature…" aria-label="Search test cases">
+            <div class="chip-row">
+              <button class="mini" data-preset="mix">✨ Showcase mix</button>
+              <button class="mini" data-preset="demo">All simulated</button>
+              <button class="mini" data-preset="real">All real</button>
+              <button class="mini" data-preset="ui">Real UI only</button>
+              <button class="mini" data-preset="clear">Clear</button>
+            </div>
+          </div>
+          <div id="picker-list" class="picker-list" role="listbox" aria-multiselectable="true"></div>
+        </div>
+      </div>
+      <label class="field">Simulation speed
+        <select id="speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="3">3×</option></select>
+      </label>
+      <label class="switch" title="Opens a visible Chromium window for real UI tests">
+        <input id="headed" type="checkbox"><span class="slider"></span> Show browser (real UI tests)
+      </label>
+      <div class="spacer"></div>
+      <button id="run-btn" class="btn btn-primary">▶ Run selected</button>
+      <button id="stop-btn" class="btn btn-danger" disabled>■ Stop</button>
+    </div>
+    <div id="selected-chips" class="selected-chips"></div>
+    <p class="note"><span class="src src-real">REAL</span> runs the framework's approved test with pytest; agents' design
+      output is replayed from the approved artifacts. <span class="src src-sim">SIMULATED</span> is a scripted demo
+      scenario: its agent activity and outcome are not real.</p>
+  </div>
+
+  <div class="kpis" id="kpis">
+    <div class="kpi"><span class="kpi-label">Test cases</span><span class="kpi-value" id="k-total">0</span><span class="kpi-sub" id="k-total-sub">selected</span></div>
+    <div class="kpi kpi-good"><span class="kpi-label">✔ Passed</span><span class="kpi-value" id="k-passed">0</span><span class="kpi-sub" id="k-rate">pass rate -</span></div>
+    <div class="kpi kpi-bad"><span class="kpi-label">✖ Failed</span><span class="kpi-value" id="k-failed">0</span><span class="kpi-sub">assertion / defect</span></div>
+    <div class="kpi kpi-err"><span class="kpi-label">⚠ Errors</span><span class="kpi-value" id="k-error">0</span><span class="kpi-sub">environment / setup</span></div>
+    <div class="kpi kpi-warn"><span class="kpi-label">⛔ Blocked</span><span class="kpi-value" id="k-blocked">0</span><span class="kpi-sub">stopped at a gate</span></div>
+    <div class="kpi"><span class="kpi-label">⏱ Elapsed</span><span class="kpi-value" id="k-elapsed">0.0s</span><span class="kpi-sub" id="k-run">no run yet</span></div>
+  </div>
+
+  <div class="card">
+    <div class="progress-head">
+      <strong id="prog-label">Ready. Pick test cases and press Run.</strong>
+      <span id="prog-pct" class="muted">0%</span>
+    </div>
+    <div class="progress"><div id="prog-bar" class="progress-bar" style="width:0%"></div></div>
+  </div>
+
+  <div class="grid-main">
+    <div class="col-wide">
+      <div class="card">
+        <div class="card-head">
+          <h2>🤖 Agent pipeline</h2>
+          <span class="muted" id="pipeline-case">No test case running</span>
+        </div>
+        <div id="pipeline" class="pipeline"></div>
+        <div class="legend">
+          <span><i class="dot st-idle"></i>Waiting</span><span><i class="dot st-running"></i>Running</span>
+          <span><i class="dot st-done"></i>Done</span><span><i class="dot st-failed"></i>Failed</span>
+          <span><i class="dot st-blocked"></i>Blocked</span><span><i class="dot st-skipped"></i>Skipped</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <h2>🔎 Agent output</h2>
+          <span class="muted" id="output-ctx">Click an agent card to inspect its output</span>
+        </div>
+        <div id="agent-output" class="agent-output"><p class="muted">Nothing yet.</p></div>
+      </div>
+    </div>
+    <div class="col-side">
+      <div class="card queue-card">
+        <div class="card-head"><h2>📋 Test queue</h2><span class="muted" id="queue-count"></span></div>
+        <ol id="queue" class="queue"><li class="muted empty">Queue is empty.</li></ol>
+      </div>
+      <div class="card">
+        <div class="card-head"><h2>Outcomes</h2></div>
+        <div class="chart-box sm"><canvas id="outcome-chart" aria-label="Outcome counts"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h2>🖥️ Live execution log</h2>
+      <div class="log-tools">
+        <select id="log-level" aria-label="Filter by level"><option value="">All levels</option><option value="ok">OK</option><option value="info">Info</option><option value="error">Errors</option><option value="event">Events</option></select>
+        <select id="log-agent" aria-label="Filter by agent"><option value="">All agents</option></select>
+        <input id="log-search" type="search" placeholder="Filter text…" aria-label="Filter log text">
+        <label class="switch small"><input id="log-follow" type="checkbox" checked><span class="slider"></span> Follow</label>
+        <button id="log-clear" class="mini">Clear</button>
+      </div>
+    </div>
+    <div id="log" class="log" role="log" aria-live="polite"></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-head"><h2>⏱ Time per agent (this run)</h2></div>
+      <div class="chart-box"><canvas id="agent-chart" aria-label="Seconds per agent"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2>🔍 Failure analysis</h2></div>
+      <div class="table-wrap"><table id="fa-table"><thead><tr><th>Test case</th><th>Category</th><th>Source</th><th>Message</th></tr></thead><tbody><tr><td colspan="4" class="muted">No failures yet.</td></tr></tbody></table></div>
+    </div>
+  </div>
+
+  <div class="card" id="summary-card" hidden>
+    <div class="card-head">
+      <h2>🧾 Summary report <span id="summary-run" class="muted"></span></h2>
+      <button id="download-btn" class="mini">⬇ Download JSON</button>
+    </div>
+    <div id="summary-banner" class="banner"></div>
+    <div class="table-wrap"><table id="summary-table"><thead><tr><th>Test case</th><th>Title</th><th>Channel</th><th>Source</th><th>Outcome</th><th>Category</th><th>Duration</th></tr></thead><tbody></tbody></table></div>
+  </div>
+</section>
+
+<!-- ============================================================== FEATURES -->
+<section id="tab-features" class="tab-panel" hidden>
+  <div class="hero card">
+    <div>
+      <h2>Specifications are the single source of truth</h2>
+      <p>Every scenario, test case, script and result traces back to an approved, versioned specification.
+        AI agents <strong>propose</strong>, deterministic rules <strong>check</strong>, humans <strong>decide</strong>.</p>
+      <div class="trace-chain" aria-label="Traceability chain">
+        <span class="tc-node c1">REQ-001</span><span class="arrow">→</span><span class="tc-node c2">SPEC-LOGIN-001</span><span class="arrow">→</span>
+        <span class="tc-node c3">AC-002</span><span class="arrow">→</span><span class="tc-node c4">TS-LOGIN-003</span><span class="arrow">→</span>
+        <span class="tc-node c5">TC-LOGIN-003</span><span class="arrow">→</span><span class="tc-node c6">UI-TEST-LOGIN-003</span><span class="arrow">→</span>
+        <span class="tc-node c7">EXEC ✔</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="principles" id="principles"></div>
+
+  <div class="card">
+    <div class="card-head"><h2>🔄 SDD lifecycle</h2><span class="muted">hexagons are human approval gates</span></div>
+    <div class="mermaid-wrap"><pre class="mermaid" id="lifecycle-diagram"></pre></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h2>🤖 The 12 CrewAI agents</h2><span class="muted">role and goal loaded from the framework's config/agents.yaml</span></div>
+    <div id="agent-cards" class="agent-cards"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h2>🌊 The 5 CrewAI flows</h2></div>
+    <div id="flow-cards" class="flow-cards"></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-head"><h2>🛡️ Gates &amp; safety controls</h2></div>
+      <ul class="feature-list" id="safety-list"></ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2>🧠 LLM providers</h2></div>
+      <div class="table-wrap"><table><thead><tr><th>Provider</th><th>Use</th></tr></thead><tbody>
+        <tr><td><span class="tag t1">offline</span></td><td>Deterministic rule engine as a CrewAI BaseLLM. No network, reproducible.</td></tr>
+        <tr><td><span class="tag t2">ollama</span></td><td>Local model. Recommended for private data.</td></tr>
+        <tr><td><span class="tag t3">openai</span></td><td>OpenAI API (needs OPENAI_API_KEY).</td></tr>
+        <tr><td><span class="tag t7">groq</span></td><td>Groq OpenAI-compatible API (needs GROQ_API_KEY).</td></tr>
+      </tbody></table></div>
+      <p class="note">Every reply must fit a Pydantic contract (guardrail, 3 retries) and pass the same rule gates, whatever the provider.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h2>📚 Framework snapshot (real data)</h2><span class="muted" id="snap-path"></span></div>
+    <div class="table-wrap"><table id="spec-table"><thead><tr><th>Specification</th><th>Feature</th><th>Version</th><th>Status</th><th>ACs</th><th>Test cases</th><th>Approvals</th><th>Validation</th></tr></thead><tbody></tbody></table></div>
+  </div>
+</section>
+
+<!-- ============================================================== REPORTS -->
+<section id="tab-reports" class="tab-panel" hidden>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-head"><h2>Dashboard runs</h2><span class="muted">from ./runs</span></div>
+      <div class="chart-box"><canvas id="runs-chart" aria-label="Dashboard run history"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2>Framework executions</h2><span class="muted">EXEC-* from the framework (real)</span></div>
+      <div class="chart-box"><canvas id="exec-chart" aria-label="Framework execution history"></canvas></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head"><h2>Run history</h2><button id="refresh-reports" class="mini">↻ Refresh</button></div>
+    <div class="table-wrap"><table id="runs-table"><thead><tr><th>Run</th><th>Started</th><th>Total</th><th>Real / Sim</th><th>✔ Passed</th><th>✖ Failed</th><th>⚠ Error</th><th>⛔ Blocked</th><th>Duration</th><th>Status</th></tr></thead><tbody></tbody></table></div>
+  </div>
+  <div class="card">
+    <div class="card-head"><h2>Framework executions (pytest plugin)</h2></div>
+    <div class="table-wrap"><table id="exec-table"><thead><tr><th>Execution</th><th>Started</th><th>Total</th><th>✔ Passed</th><th>✖ Failed</th><th>Skipped</th><th>⚠ Error</th></tr></thead><tbody></tbody></table></div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">SDD-Based AI QA Automation Framework using CrewAI · dashboard reads framework artifacts read-only · results labelled REAL come only from pytest</footer>
+<script src="/static/js/app.js"></script>
+</body>
+</html>

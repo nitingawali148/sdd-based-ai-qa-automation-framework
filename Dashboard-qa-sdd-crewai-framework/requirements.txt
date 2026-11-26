@@ -1,0 +1,4 @@
+# Only needed if you do NOT run the dashboard with the framework's own .venv (which already has these).
+fastapi>=0.110
+uvicorn>=0.29
+pyyaml>=6.0

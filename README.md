@@ -16,6 +16,9 @@ specification, and nothing moves forward without passing a validation gate and a
 
 ![QA dashboard overview](docs/images/dashboard-overview.png)
 
+> **Want to see it run?** The [interactive live dashboard](#16-interactive-live-dashboard) lets you pick test
+> cases and watch them move through every AI agent in real time.
+
 ---
 
 ## Table of contents
@@ -35,10 +38,11 @@ specification, and nothing moves forward without passing a validation gate and a
 13. [Configuration](#13-configuration)
 14. [The demo application under test](#14-the-demo-application-under-test)
 15. [Reports and the QA dashboard](#15-reports-and-the-qa-dashboard)
-16. [Change impact and selective regeneration](#16-change-impact-and-selective-regeneration)
-17. [Safety controls](#17-safety-controls)
-18. [Testing the framework itself](#18-testing-the-framework-itself)
-19. [Troubleshooting](#19-troubleshooting)
+16. [Interactive live dashboard](#16-interactive-live-dashboard)
+17. [Change impact and selective regeneration](#17-change-impact-and-selective-regeneration)
+18. [Safety controls](#18-safety-controls)
+19. [Testing the framework itself](#19-testing-the-framework-itself)
+20. [Troubleshooting](#20-troubleshooting)
 
 ---
 
@@ -355,6 +359,7 @@ qa-sdd-crewai-framework/
 ├── test_data/     generated test data (expressions; no credentials)
 ├── tests/         framework unit tests
 ├── docs/images/   screenshots used in this README
+├── Dashboard-qa-sdd-crewai-framework/   interactive live dashboard (FastAPI + single-page UI)
 ├── config/        framework.yaml, agents.yaml, tasks.yaml
 ├── FLOW.md        step-by-step guide to every flow
 └── main.py        CLI
@@ -556,7 +561,7 @@ Pytest starts it automatically for the `local` environment (default port `8765`)
 
 Demo credentials come from `.env` (`SDD_DEMO_USER_EMAIL`, `SDD_DEMO_USER_PASSWORD`, …).
 `SDD_DEMO_LOGIN_ERROR` changes the invalid-credentials message, which is used to demonstrate
-*spec–implementation drift* (section 16).
+*spec–implementation drift* (section 17).
 
 ---
 
@@ -603,7 +608,74 @@ Dashboard sections (real screenshots from this repository):
 
 ---
 
-## 16. Change impact and selective regeneration
+## 16. Interactive live dashboard
+
+[`Dashboard-qa-sdd-crewai-framework/`](Dashboard-qa-sdd-crewai-framework/) is a web app for demonstrations
+and day-to-day monitoring. Pick test cases from a dropdown, press **Run**, and watch each one move through the
+AI agents live: status, current activity, progress, each agent's output, the execution log and a final report.
+
+```powershell
+cd Dashboard-qa-sdd-crewai-framework
+.\run.ps1          # reuses the framework's .venv and opens http://127.0.0.1:8090
+```
+
+![Live execution: agent pipeline, KPIs and test queue](Dashboard-qa-sdd-crewai-framework/docs/live-running.png)
+
+```mermaid
+flowchart LR
+  P["🧪 Pick test cases<br/>REAL + SIMULATED"]:::a --> R["▶ Run"]:::b
+  R --> AG["🤖 Agent pipeline<br/>11 agents, live status"]:::c
+  AG --> EX{"Source?"}:::d
+  EX -- REAL --> PY["▶️ real pytest in the framework<br/>Playwright / HTTPX"]:::e
+  EX -- SIMULATED --> SC["🎬 scripted demo outcome"]:::f
+  PY & SC --> FA["🔍 Failure Analysis"]:::c --> RP["🧾 Summary report<br/>+ run history"]:::g
+
+  classDef a fill:#dbeafe,stroke:#2563eb,color:#0f172a
+  classDef b fill:#ede9fe,stroke:#7c3aed,color:#0f172a
+  classDef c fill:#fae8ff,stroke:#a21caf,color:#0f172a
+  classDef d fill:#fef3c7,stroke:#d97706,color:#0f172a
+  classDef e fill:#dcfce7,stroke:#16a34a,color:#0f172a
+  classDef f fill:#ffedd5,stroke:#ea580c,color:#0f172a
+  classDef g fill:#fce7f3,stroke:#db2777,color:#0f172a
+```
+
+**Two kinds of test case, always labelled:**
+
+| Label | What happens |
+|---|---|
+| **REAL** | One of the framework's approved test cases. The agents' design output is replayed from the approved artifacts (including the real generated code), and the execution step **really runs pytest**. The result comes only from the pytest plugin; failures are classified with the framework's own rules. |
+| **SIMULATED** | A dummy demo scenario (cart, checkout, search, billing, …) with scripted agent activity and outcome. They cover every path: pass, application defect, automation issue, spec drift, test data issue, environment error, and a spec blocked at the validation gate. |
+
+**What it shows:**
+
+- **Live Execution:** a searchable multi-select picker with presets, simulation speed and a *Show browser*
+  (headed) switch; KPI tiles; an agent card per agent with live status, activity, progress and duration;
+  each agent's output; the test queue; a filterable colour-coded log; outcome and time-per-agent charts; a
+  failure analysis table; and a summary report you can download as JSON.
+- **Framework Features:** SDD principles, the lifecycle diagram, the 12 agents (read from `config/agents.yaml`),
+  the 5 flows with copyable commands, the safety controls, the LLM providers, and a real snapshot of the
+  specifications and approvals.
+- **Reports & History:** past dashboard runs, and this framework's own `EXEC-*` executions.
+
+A completed run of the *Showcase mix* (6 simulated + 2 real test cases):
+
+![Completed run with summary report](Dashboard-qa-sdd-crewai-framework/docs/live-complete.png)
+
+| Agent output: the real generated code of `TC-LOGIN-003` | Agent output: failure analysis |
+|---|---|
+| ![Real code region](Dashboard-qa-sdd-crewai-framework/docs/agent-output-real.png) | ![Failure analysis output](Dashboard-qa-sdd-crewai-framework/docs/agent-output-failure.png) |
+
+The Framework Features tab:
+
+![Framework features tab](Dashboard-qa-sdd-crewai-framework/docs/features.png)
+
+The dashboard only reads the framework's files. Its real pytest runs write results and logs into
+`Dashboard-qa-sdd-crewai-framework/runs/` (git-ignored), never into `specifications/` or `output/executions/`.
+See [its README](Dashboard-qa-sdd-crewai-framework/README.md) for the API, the layout and a 5-minute demo script.
+
+---
+
+## 17. Change impact and selective regeneration
 
 ```mermaid
 flowchart TB
@@ -644,7 +716,7 @@ See [FLOW.md › Flow 5](FLOW.md#flow-5--specification-change-impact) for the fu
 
 ---
 
-## 17. Safety controls
+## 18. Safety controls
 
 | Control | How |
 |---|---|
@@ -659,7 +731,7 @@ See [FLOW.md › Flow 5](FLOW.md#flow-5--specification-change-impact) for the fu
 
 ---
 
-## 18. Testing the framework itself
+## 19. Testing the framework itself
 
 ```powershell
 $env:LLM_PROVIDER = "offline"
@@ -672,7 +744,7 @@ failure and drift classification, and test data expressions.
 
 ---
 
-## 19. Troubleshooting
+## 20. Troubleshooting
 
 | Symptom | Cause and fix |
 |---|---|
