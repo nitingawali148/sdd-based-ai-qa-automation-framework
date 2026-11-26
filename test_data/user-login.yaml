@@ -1,0 +1,28 @@
+# Test data - values are expressions resolved at runtime; no hard-coded credentials
+feature: user-login
+spec_id: SPEC-LOGIN-001
+spec_version: '1.0'
+fields:
+  email:
+    empty: ''
+    missing: ${omit}
+    valid: ${env:SDD_DEMO_USER_EMAIL}
+    unregistered: ${faker:unique_email}
+    duplicate: ${faker:unique_email}
+    malformed: not-an-email
+    invalid: not-an-email
+    too_long: ${repeat:x:255}
+    at_max: ${repeat:x:254}
+  password:
+    empty: ''
+    missing: ${omit}
+    valid: ${env:SDD_DEMO_USER_PASSWORD}
+    invalid: ${faker:password:12}
+    too_short: ${repeat:x:7}
+    at_min: ${repeat:x:8}
+    too_long: ${repeat:x:65}
+    at_max: ${repeat:x:64}
+notes:
+- Credentials are referenced as ${env:VAR}; values live in .env (never in this file).
+- ${faker:...} values are generated at runtime, unique per call; ${omit} removes the field.
+generated_by: offline-rule-engine

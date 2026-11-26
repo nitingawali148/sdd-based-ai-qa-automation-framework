@@ -1,0 +1,47 @@
+{
+  "properties": {
+    "stage": {
+      "enum": [
+        "spec",
+        "test_cases",
+        "scripts"
+      ],
+      "title": "Stage",
+      "type": "string"
+    },
+    "spec_id": {
+      "title": "Spec Id",
+      "type": "string"
+    },
+    "spec_version": {
+      "title": "Spec Version",
+      "type": "string"
+    },
+    "approved_by": {
+      "title": "Approved By",
+      "type": "string"
+    },
+    "approved_at": {
+      "title": "Approved At",
+      "type": "string"
+    },
+    "artifact_hash": {
+      "title": "Artifact Hash",
+      "type": "string"
+    },
+    "comment": {
+      "default": "",
+      "title": "Comment",
+      "type": "string"
+    }
+  },
+  "required": [
+    "stage",
+    "spec_id",
+    "spec_version",
+    "approved_by",
+    "artifact_hash"
+  ],
+  "title": "ApprovalRecord",
+  "type": "object"
+}

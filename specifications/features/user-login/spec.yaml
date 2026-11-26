@@ -1,0 +1,86 @@
+# SPEC-LOGIN-001 v1.0 - feature specification (source of truth)
+id: SPEC-LOGIN-001
+version: '1.0'
+title: User Login
+feature: user-login
+feature_code: LOGIN
+requirement_ids:
+- REQ-001
+status: APPROVED
+priority: P1
+objective: Allow registered users to log in securely.
+user_story: As a registered user, I want to log in with my email and password so that I can access my dashboard.
+functional_requirements:
+- id: FR-001
+  text: The user must provide Email (email, required, max 254 characters).
+- id: FR-002
+  text: The user must provide Password (password, required, 8-64 characters).
+- id: FR-003
+  text: 'The system must provide POST /api/auth/login: Authenticate a user and issue an access token.'
+- id: FR-004
+  text: The system must provide the Login page at /login.
+- id: FR-005
+  text: The system must provide the Dashboard page at /dashboard.
+business_rules:
+- id: BR-001
+  text: Only registered users can log in.
+- id: BR-002
+  text: The email must be a valid email address.
+- id: BR-003
+  text: The password must be between 8 and 64 characters.
+- id: BR-004
+  text: Invalid credentials must not reveal whether the email or the password was wrong.
+inputs:
+- name: email
+  type: email
+  required: true
+  min_length: null
+  max_length: 254
+  pattern: null
+  enum: []
+  label: Email
+  description: max 254 characters
+- name: password
+  type: password
+  required: true
+  min_length: 8
+  max_length: 64
+  pattern: null
+  enum: []
+  label: Password
+  description: 8-64 characters
+ui_pages:
+- name: Login
+  path: /login
+  elements:
+  - label: Email
+    role: textbox
+  - label: Password
+    role: textbox
+  - label: Sign in
+    role: button
+- name: Dashboard
+  path: /dashboard
+  elements:
+  - label: Dashboard
+    role: heading
+  - label: Sign out
+    role: button
+api_endpoints:
+- method: POST
+  path: /api/auth/login
+  summary: Authenticate a user and issue an access token
+non_functional:
+- id: NFR-001
+  text: Login API response time must be under 2 seconds at the 95th percentile.
+- id: NFR-002
+  text: Passwords must never be written to logs.
+- id: NFR-003
+  text: Authentication must follow the approved security requirements (OWASP ASVS L1).
+dependencies:
+- A registered test user is available in the target environment.
+open_questions: []
+generated_by: offline-rule-engine
+created_at: '2026-11-26T14:50:12+00:00'
+updated_at: '2026-11-26T15:07:09+00:00'
+source_requirement_hash: 1225af19ed0ce2ed

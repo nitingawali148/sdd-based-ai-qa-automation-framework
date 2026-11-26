@@ -1,0 +1,16 @@
+"""Generated API tests for {{ spec.id }} - {{ spec.title }}.
+
+Source of truth: specifications/features/{{ spec.feature }}/ and specifications/api/openapi.yaml.
+Do not hand-edit generated regions: change the specification and regenerate.
+"""
+
+from __future__ import annotations
+
+import pytest
+
+from api.clients.api_client import ApiClient
+from api.services.resource_service import create_resource, item_path  # noqa: F401
+from api.validators.response_validator import expect_body_contains, expect_schema, expect_status  # noqa: F401
+from utils.test_data import TestData
+
+DATA = TestData.for_feature({{ spec.feature|pyrepr }})

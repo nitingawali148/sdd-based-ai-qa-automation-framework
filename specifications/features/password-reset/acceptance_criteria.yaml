@@ -1,0 +1,48 @@
+# SPEC-RESET-001 v1.0 - acceptance criteria
+spec_id: SPEC-RESET-001
+spec_version: '1.0'
+acceptance_criteria:
+- id: AC-001
+  title: Request a password reset -> they receive an email quickly
+  type: positive
+  given: a registered user
+  when: they request a password reset
+  then: they receive an email quickly
+  channels:
+  - ui
+  inputs:
+    email: valid
+  expected_ui:
+    kind: unknown
+    value: they receive an email quickly
+    negate: false
+    status_code: null
+    body_contains: ''
+    validate_schema: false
+  expected_api: null
+  api: null
+  start_page: Forgot Password
+  requirement_id: REQ-003
+  source_text: Given a registered user, when they request a password reset, then they receive an email quickly.
+- id: AC-002
+  title: Requests a reset -> an appropriate message is shown
+  type: negative
+  given: an unregistered email
+  when: the user requests a reset
+  then: an appropriate message is shown
+  channels:
+  - ui
+  inputs:
+    email: unregistered
+  expected_ui:
+    kind: unknown
+    value: an appropriate message is shown
+    negate: false
+    status_code: null
+    body_contains: ''
+    validate_schema: false
+  expected_api: null
+  api: null
+  start_page: Forgot Password
+  requirement_id: REQ-003
+  source_text: Given an unregistered email, when the user requests a reset, then an appropriate message is shown.

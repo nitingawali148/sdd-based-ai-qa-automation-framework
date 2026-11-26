@@ -1,0 +1,289 @@
+{
+  "$defs": {
+    "APIBinding": {
+      "properties": {
+        "method": {
+          "title": "Method",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "operation_id": {
+          "default": "",
+          "title": "Operation Id",
+          "type": "string"
+        },
+        "auth": {
+          "default": true,
+          "title": "Auth",
+          "type": "boolean"
+        },
+        "precondition": {
+          "default": "none",
+          "enum": [
+            "none",
+            "existing_resource",
+            "duplicate"
+          ],
+          "title": "Precondition",
+          "type": "string"
+        }
+      },
+      "required": [
+        "method",
+        "path"
+      ],
+      "title": "APIBinding",
+      "type": "object"
+    },
+    "Expectation": {
+      "properties": {
+        "kind": {
+          "default": "unknown",
+          "enum": [
+            "navigate",
+            "message",
+            "status",
+            "unknown"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "value": {
+          "default": "",
+          "title": "Value",
+          "type": "string"
+        },
+        "negate": {
+          "default": false,
+          "title": "Negate",
+          "type": "boolean"
+        },
+        "status_code": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Status Code"
+        },
+        "body_contains": {
+          "default": "",
+          "title": "Body Contains",
+          "type": "string"
+        },
+        "validate_schema": {
+          "default": false,
+          "title": "Validate Schema",
+          "type": "boolean"
+        }
+      },
+      "title": "Expectation",
+      "type": "object"
+    },
+    "TestCase": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "key": {
+          "title": "Key",
+          "type": "string"
+        },
+        "scenario_id": {
+          "title": "Scenario Id",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "channel": {
+          "enum": [
+            "ui",
+            "api"
+          ],
+          "title": "Channel",
+          "type": "string"
+        },
+        "ac_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Ac Ids",
+          "type": "array"
+        },
+        "spec_id": {
+          "title": "Spec Id",
+          "type": "string"
+        },
+        "spec_version": {
+          "title": "Spec Version",
+          "type": "string"
+        },
+        "ac_hash": {
+          "title": "Ac Hash",
+          "type": "string"
+        },
+        "priority": {
+          "default": "P2",
+          "enum": [
+            "P1",
+            "P2",
+            "P3"
+          ],
+          "title": "Priority",
+          "type": "string"
+        },
+        "preconditions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Preconditions",
+          "type": "array"
+        },
+        "steps": {
+          "items": {
+            "$ref": "#/$defs/TestStep"
+          },
+          "title": "Steps",
+          "type": "array"
+        },
+        "test_data": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Test Data",
+          "type": "object"
+        },
+        "expected": {
+          "$ref": "#/$defs/Expectation"
+        },
+        "expected_result": {
+          "default": "",
+          "title": "Expected Result",
+          "type": "string"
+        },
+        "start_page": {
+          "default": "",
+          "title": "Start Page",
+          "type": "string"
+        },
+        "api": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/APIBinding"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "automation_id": {
+          "default": "",
+          "title": "Automation Id",
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
+        },
+        "status": {
+          "default": "active",
+          "enum": [
+            "active",
+            "obsolete"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "key",
+        "scenario_id",
+        "title",
+        "channel",
+        "ac_ids",
+        "spec_id",
+        "spec_version",
+        "ac_hash",
+        "expected"
+      ],
+      "title": "TestCase",
+      "type": "object"
+    },
+    "TestStep": {
+      "properties": {
+        "n": {
+          "title": "N",
+          "type": "integer"
+        },
+        "action": {
+          "title": "Action",
+          "type": "string"
+        },
+        "target": {
+          "default": "",
+          "title": "Target",
+          "type": "string"
+        },
+        "data": {
+          "default": "",
+          "title": "Data",
+          "type": "string"
+        },
+        "expected": {
+          "default": "",
+          "title": "Expected",
+          "type": "string"
+        }
+      },
+      "required": [
+        "n",
+        "action"
+      ],
+      "title": "TestStep",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "spec_id": {
+      "title": "Spec Id",
+      "type": "string"
+    },
+    "spec_version": {
+      "title": "Spec Version",
+      "type": "string"
+    },
+    "test_cases": {
+      "items": {
+        "$ref": "#/$defs/TestCase"
+      },
+      "title": "Test Cases",
+      "type": "array"
+    },
+    "generated_by": {
+      "default": "",
+      "title": "Generated By",
+      "type": "string"
+    }
+  },
+  "required": [
+    "spec_id",
+    "spec_version"
+  ],
+  "title": "TestCaseSet",
+  "type": "object"
+}

@@ -1,0 +1,152 @@
+{
+  "$defs": {
+    "TestResult": {
+      "properties": {
+        "nodeid": {
+          "title": "Nodeid",
+          "type": "string"
+        },
+        "automation_id": {
+          "default": "",
+          "title": "Automation Id",
+          "type": "string"
+        },
+        "test_case_id": {
+          "default": "",
+          "title": "Test Case Id",
+          "type": "string"
+        },
+        "ac_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Ac Ids",
+          "type": "array"
+        },
+        "spec_id": {
+          "default": "",
+          "title": "Spec Id",
+          "type": "string"
+        },
+        "spec_version": {
+          "default": "",
+          "title": "Spec Version",
+          "type": "string"
+        },
+        "channel": {
+          "default": "",
+          "title": "Channel",
+          "type": "string"
+        },
+        "outcome": {
+          "enum": [
+            "passed",
+            "failed",
+            "skipped",
+            "error"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "duration_s": {
+          "default": 0.0,
+          "title": "Duration S",
+          "type": "number"
+        },
+        "error_type": {
+          "default": "",
+          "title": "Error Type",
+          "type": "string"
+        },
+        "message": {
+          "default": "",
+          "title": "Message",
+          "type": "string"
+        },
+        "traceback": {
+          "default": "",
+          "title": "Traceback",
+          "type": "string"
+        },
+        "screenshot": {
+          "default": "",
+          "title": "Screenshot",
+          "type": "string"
+        },
+        "trace": {
+          "default": "",
+          "title": "Trace",
+          "type": "string"
+        }
+      },
+      "required": [
+        "nodeid",
+        "outcome"
+      ],
+      "title": "TestResult",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "started_at": {
+      "title": "Started At",
+      "type": "string"
+    },
+    "finished_at": {
+      "default": "",
+      "title": "Finished At",
+      "type": "string"
+    },
+    "environment": {
+      "default": "",
+      "title": "Environment",
+      "type": "string"
+    },
+    "base_url": {
+      "default": "",
+      "title": "Base Url",
+      "type": "string"
+    },
+    "command": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Command",
+      "type": "array"
+    },
+    "selection": {
+      "additionalProperties": true,
+      "title": "Selection",
+      "type": "object"
+    },
+    "exit_code": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Exit Code"
+    },
+    "results": {
+      "items": {
+        "$ref": "#/$defs/TestResult"
+      },
+      "title": "Results",
+      "type": "array"
+    }
+  },
+  "required": [
+    "id",
+    "started_at"
+  ],
+  "title": "ExecutionRun",
+  "type": "object"
+}

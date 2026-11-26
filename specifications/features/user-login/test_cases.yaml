@@ -1,0 +1,566 @@
+# SPEC-LOGIN-001 - test cases
+spec_id: SPEC-LOGIN-001
+spec_version: '1.0'
+test_cases:
+- id: TC-LOGIN-001
+  key: AC-001:ui:base
+  scenario_id: TS-LOGIN-001
+  title: Submit a valid email and password -> they are navigated to the Dashboard page [UI]
+  channel: ui
+  ac_ids:
+  - AC-001
+  spec_id: SPEC-LOGIN-001
+  spec_version: '1.0'
+  ac_hash: c32e81e34e758d29
+  priority: P1
+  preconditions:
+  - Application is reachable at the configured base URL (UI)
+  - Given a registered user
+  - Registered user credentials are provided through environment variables
+  steps:
+  - n: 1
+    action: navigate
+    target: Login page (/login)
+    data: ''
+    expected: Login page is displayed
+  - n: 2
+    action: fill
+    target: Email
+    data: valid
+    expected: ''
+  - n: 3
+    action: fill
+    target: Password
+    data: valid
+    expected: ''
+  - n: 4
+    action: click
+    target: Sign in button
+    data: ''
+    expected: ''
+  - n: 5
+    action: verify
+    target: ''
+    data: ''
+    expected: User is navigated to the Dashboard page
+  test_data:
+    email: valid
+    password: valid
+  expected:
+    kind: navigate
+    value: Dashboard
+    negate: false
+    status_code: null
+    body_contains: ''
+    validate_schema: false
+  expected_result: User is navigated to the Dashboard page
+  start_page: Login
+  api: null
+  automation_id: UI-TEST-LOGIN-001
+  tags:
+  - functional
+  - regression
+  - smoke
+  status: active
+- id: TC-LOGIN-002
+  key: AC-001:api:base
+  scenario_id: TS-LOGIN-002
+  title: Submit a valid email and password -> they are navigated to the Dashboard page [API]
+  channel: api
+  ac_ids:
+  - AC-001
+  spec_id: SPEC-LOGIN-001
+  spec_version: '1.0'
+  ac_hash: c32e81e34e758d29
+  priority: P1
+  preconditions:
+  - Application is reachable at the configured base URL (API)
+  - Given a registered user
+  - Endpoint is public (no authentication required)
+  - Registered user credentials are provided through environment variables
+  steps:
+  - n: 1
+    action: request
+    target: POST /api/auth/login
+    data: 'email: <valid>, password: <valid>'
+    expected: ''
+  - n: 2
+    action: verify
+    target: ''
+    data: ''
+    expected: Response status is 200, body contains "access_token"
+  test_data:
+    email: valid
+    password: valid
+  expected:
+    kind: status
+    value: '200'
+    negate: false
+    status_code: 200
+    body_contains: access_token
+    validate_schema: false
+  expected_result: Response status is 200, body contains "access_token"
+  start_page: ''
+  api:
+    method: POST
+    path: /api/auth/login
+    operation_id: login
+    auth: false
+    precondition: none
+  automation_id: API-TEST-LOGIN-002
+  tags:
+  - functional
+  - regression
+  - smoke
+  status: active
+- id: TC-LOGIN-003
+  key: AC-002:ui:base
+  scenario_id: TS-LOGIN-003
+  title: Submit an invalid password -> "Invalid email or password" shown [UI]
+  channel: ui
+  ac_ids:
+  - AC-002
+  spec_id: SPEC-LOGIN-001
+  spec_version: '1.0'
+  ac_hash: f65ed310fb478d6a
+  priority: P2
+  preconditions:
+  - Application is reachable at the configured base URL (UI)
+  - Given a registered user
+  - Registered user credentials are provided through environment variables
+  steps:
+  - n: 1
+    action: navigate
+    target: Login page (/login)
+    data: ''
+    expected: Login page is displayed
+  - n: 2
+    action: fill
+    target: Email
+    data: valid
+    expected: ''
+  - n: 3
+    action: fill
+    target: Password
+    data: invalid
+    expected: ''
+  - n: 4
+    action: click
+    target: Sign in button
+    data: ''
+    expected: ''
+  - n: 5
+    action: verify
+    target: ''
+    data: ''
+    expected: Message "Invalid email or password" is displayed
+  test_data:
+    email: valid
+    password: invalid
+  expected:
+    kind: message
+    value: Invalid email or password
+    negate: false
+    status_code: null
+    body_contains: ''
+    validate_schema: false
+  expected_result: Message "Invalid email or password" is displayed
+  start_page: Login
+  api: null
+  automation_id: UI-TEST-LOGIN-003
+  tags:
+  - functional
+  - regression
+  status: active
+- id: TC-LOGIN-004
+  key: AC-002:api:base
+  scenario_id: TS-LOGIN-004
+  title: Submit an invalid password -> "Invalid email or password" shown [API]
+  channel: api
+  ac_ids:
+  - AC-002
+  spec_id: SPEC-LOGIN-001
+  spec_version: '1.0'
+  ac_hash: f65ed310fb478d6a
+  priority: P2
+  preconditions:
+  - Application is reachable at the configured base URL (API)
+  - Given a registered user
+  - Endpoint is public (no authentication required)
+  - Registered user credentials are provided through environment variables
+  steps:
+  - n: 1
+    action: request
+    target: POST /api/auth/login
+    data: 'email: <valid>, password: <invalid>'
+    expected: ''
+  - n: 2
+    action: verify
+    target: ''
+    data: ''
+    expected: Response status is 401, body contains "Invalid email or password"
+  test_data:
+    email: valid
+    password: invalid
+  expected:
+    kind: status
+    value: '401'
+    negate: false
+    status_code: 401
+    body_contains: Invalid email or password
+    validate_schema: false
+  expected_result: Response status is 401, body contains "Invalid email or password"
+  start_page: ''
+  api:
+    method: POST
+    path: /api/auth/login
+    operation_id: login
+    auth: false
+    precondition: none
+  automation_id: API-TEST-LOGIN-004
+  tags:
+  - functional
+  - regression
+  status: active
+- id: TC-LOGIN-005
+  key: AC-003:ui:base
+  scenario_id: TS-LOGIN-005
+  title: Submits an empty email -> "Email is required" shown [UI]
+  channel: ui
+  ac_ids:
+  - AC-003
+  spec_id: SPEC-LOGIN-001
+  spec_version: '1.0'
+  ac_hash: eae7857569b8f21d
+  priority: P2
+  preconditions:
+  - Application is reachable at the configured base URL (UI)
+  - Given the Login page
+  steps:
+  - n: 1
+    action: navigate
+    target: Login page (/login)
+    data: ''
+    expected: Login page is displayed
+  - n: 2
+    action: fill
+    target: Email
+    data: empty
+    expected: ''
+  - n: 3
+    action: fill
+    target: Password
+    data: valid
+    expected: ''
+  - n: 4
+    action: click
+    target: Sign in button
+    data: ''
+    expected: ''
+  - n: 5
+    action: verify
+    target: ''
+    data: ''
+    expected: Message "Email is required" is displayed
+  test_data:
+    email: empty
+    password: valid
+  expected:
+    kind: message
+    value: Email is required
+    negate: false
+    status_code: null
+    body_contains: ''
+    validate_schema: false
+  expected_result: Message "Email is required" is displayed
+  start_page: Login
+  api: null
+  automation_id: UI-TEST-LOGIN-005
+  tags:
+  - functional
+  - regression
+  status: active
+- id: TC-LOGIN-006
+  key: AC-004:ui:base
+  scenario_id: TS-LOGIN-006
+  title: Submits an empty password -> "Password is required" shown [UI]
+  channel: ui
+  ac_ids:
+  - AC-004
+  spec_id: SPEC-LOGIN-001
+  spec_version: '1.0'
+  ac_hash: caa11d0a94a85131
+  priority: P2
+  preconditions:
+  - Application is reachable at the configured base URL (UI)
+  - Given the Login page
+  steps:
+  - n: 1
+    action: navigate
+    target: Login page (/login)
+    data: ''
+    expected: Login page is displayed
+  - n: 2
+    action: fill
+    target: Email
+    data: valid
+    expected: ''
+  - n: 3
+    action: fill
+    target: Password
+    data: empty
+    expected: ''
+  - n: 4
+    action: click
+    target: Sign in button
+    data: ''
+    expected: ''
+  - n: 5
+    action: verify
+    target: ''
+    data: ''
+    expected: Message "Password is required" is displayed
+  test_data:
+    email: valid
+    password: empty
+  expected:
+    kind: message
+    value: Password is required
+    negate: false
+    status_code: null
+    body_contains: ''
+    validate_schema: false
+  expected_result: Message "Password is required" is displayed
+  start_page: Login
+  api: null
+  automation_id: UI-TEST-LOGIN-006
+  tags:
+  - functional
+  - regression
+  status: active
+- id: TC-LOGIN-007
+  key: AC-005:ui:base
+  scenario_id: TS-LOGIN-007
+  title: Submits it with a password -> "Invalid email or password" shown [UI]
+  channel: ui
+  ac_ids:
+  - AC-005
+  spec_id: SPEC-LOGIN-001
+  spec_version: '1.0'
+  ac_hash: 30e5018e8624b349
+  priority: P2
+  preconditions:
+  - Application is reachable at the configured base URL (UI)
+  - Given an unregistered email
+  - Registered user credentials are provided through environment variables
+  steps:
+  - n: 1
+    action: navigate
+    target: Login page (/login)
+    data: ''
+    expected: Login page is displayed
+  - n: 2
+    action: fill
+    target: Email
+    data: unregistered
+    expected: ''
+  - n: 3
+    action: fill
+    target: Password
+    data: valid
+    expected: ''
+  - n: 4
+    action: click
+    target: Sign in button
+    data: ''
+    expected: ''
+  - n: 5
+    action: verify
+    target: ''
+    data: ''
+    expected: Message "Invalid email or password" is displayed
+  test_data:
+    email: unregistered
+    password: valid
+  expected:
+    kind: message
+    value: Invalid email or password
+    negate: false
+    status_code: null
+    body_contains: ''
+    validate_schema: false
+  expected_result: Message "Invalid email or password" is displayed
+  start_page: Login
+  api: null
+  automation_id: UI-TEST-LOGIN-007
+  tags:
+  - functional
+  - regression
+  status: active
+- id: TC-LOGIN-008
+  key: AC-005:api:base
+  scenario_id: TS-LOGIN-008
+  title: Submits it with a password -> "Invalid email or password" shown [API]
+  channel: api
+  ac_ids:
+  - AC-005
+  spec_id: SPEC-LOGIN-001
+  spec_version: '1.0'
+  ac_hash: 30e5018e8624b349
+  priority: P2
+  preconditions:
+  - Application is reachable at the configured base URL (API)
+  - Given an unregistered email
+  - Endpoint is public (no authentication required)
+  - Registered user credentials are provided through environment variables
+  steps:
+  - n: 1
+    action: request
+    target: POST /api/auth/login
+    data: 'email: <unregistered>, password: <valid>'
+    expected: ''
+  - n: 2
+    action: verify
+    target: ''
+    data: ''
+    expected: Response status is 401, body contains "Invalid email or password"
+  test_data:
+    email: unregistered
+    password: valid
+  expected:
+    kind: status
+    value: '401'
+    negate: false
+    status_code: 401
+    body_contains: Invalid email or password
+    validate_schema: false
+  expected_result: Response status is 401, body contains "Invalid email or password"
+  start_page: ''
+  api:
+    method: POST
+    path: /api/auth/login
+    operation_id: login
+    auth: false
+    precondition: none
+  automation_id: API-TEST-LOGIN-008
+  tags:
+  - functional
+  - regression
+  status: active
+- id: TC-LOGIN-009
+  key: AC-006:ui:base
+  scenario_id: TS-LOGIN-009
+  title: Submits a password shorter than 8 characters -> "Password must be at least 8 characters" shown [UI]
+  channel: ui
+  ac_ids:
+  - AC-006
+  spec_id: SPEC-LOGIN-001
+  spec_version: '1.0'
+  ac_hash: cc1bf909cc6eb56e
+  priority: P2
+  preconditions:
+  - Application is reachable at the configured base URL (UI)
+  - Given the Login page
+  steps:
+  - n: 1
+    action: navigate
+    target: Login page (/login)
+    data: ''
+    expected: Login page is displayed
+  - n: 2
+    action: fill
+    target: Email
+    data: valid
+    expected: ''
+  - n: 3
+    action: fill
+    target: Password
+    data: too_short
+    expected: ''
+  - n: 4
+    action: click
+    target: Sign in button
+    data: ''
+    expected: ''
+  - n: 5
+    action: verify
+    target: ''
+    data: ''
+    expected: Message "Password must be at least 8 characters" is displayed
+  test_data:
+    email: valid
+    password: too_short
+  expected:
+    kind: message
+    value: Password must be at least 8 characters
+    negate: false
+    status_code: null
+    body_contains: ''
+    validate_schema: false
+  expected_result: Message "Password must be at least 8 characters" is displayed
+  start_page: Login
+  api: null
+  automation_id: UI-TEST-LOGIN-009
+  tags:
+  - functional
+  - regression
+  status: active
+- id: TC-LOGIN-010
+  key: AC-006:ui:at_min:password
+  scenario_id: TS-LOGIN-010
+  title: password with exactly 8 characters does not show "Password must be at least 8 characters" [UI]
+  channel: ui
+  ac_ids:
+  - AC-006
+  spec_id: SPEC-LOGIN-001
+  spec_version: '1.0'
+  ac_hash: cc1bf909cc6eb56e
+  priority: P2
+  preconditions:
+  - Application is reachable at the configured base URL (UI)
+  - Given the Login page
+  steps:
+  - n: 1
+    action: navigate
+    target: Login page (/login)
+    data: ''
+    expected: Login page is displayed
+  - n: 2
+    action: fill
+    target: Email
+    data: valid
+    expected: ''
+  - n: 3
+    action: fill
+    target: Password
+    data: at_min
+    expected: ''
+  - n: 4
+    action: click
+    target: Sign in button
+    data: ''
+    expected: ''
+  - n: 5
+    action: verify
+    target: ''
+    data: ''
+    expected: Message "Password must be at least 8 characters" is not displayed
+  test_data:
+    email: valid
+    password: at_min
+  expected:
+    kind: message
+    value: Password must be at least 8 characters
+    negate: true
+    status_code: null
+    body_contains: ''
+    validate_schema: false
+  expected_result: Message "Password must be at least 8 characters" is not displayed
+  start_page: Login
+  api: null
+  automation_id: UI-TEST-LOGIN-010
+  tags:
+  - functional
+  - regression
+  status: active
+generated_by: offline-rule-engine

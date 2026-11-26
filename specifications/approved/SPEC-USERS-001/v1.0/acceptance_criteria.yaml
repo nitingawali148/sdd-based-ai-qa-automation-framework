@@ -1,0 +1,257 @@
+# SPEC-USERS-001 v1.0 - acceptance criteria
+spec_id: SPEC-USERS-001
+spec_version: '1.0'
+acceptance_criteria:
+- id: AC-001
+  title: Create a user with a valid name, email and role -> the API returns 201 and the created user
+  type: positive
+  given: an authenticated admin
+  when: they create a user with a valid name, email and role
+  then: the API returns 201 and the created user
+  channels:
+  - api
+  inputs:
+    name: valid
+    email: valid
+    role: valid
+  expected_ui: null
+  expected_api:
+    kind: status
+    value: '201'
+    negate: false
+    status_code: 201
+    body_contains: ''
+    validate_schema: true
+  api:
+    method: POST
+    path: /api/users
+    operation_id: createUser
+    auth: true
+    precondition: none
+  start_page: ''
+  requirement_id: REQ-002
+  source_text: Given an authenticated admin, when they create a user with a valid name, email and role, then the
+    API returns 201 and the created user.
+- id: AC-002
+  title: Create a user with the same email -> "Email already exists" shown
+  type: negative
+  given: an authenticated admin and an existing user
+  when: they create a user with the same email
+  then: the API returns 409 with "Email already exists"
+  channels:
+  - api
+  inputs:
+    name: valid
+    email: duplicate
+    role: valid
+  expected_ui: null
+  expected_api:
+    kind: status
+    value: '409'
+    negate: false
+    status_code: 409
+    body_contains: Email already exists
+    validate_schema: false
+  api:
+    method: POST
+    path: /api/users
+    operation_id: createUser
+    auth: true
+    precondition: duplicate
+  start_page: ''
+  requirement_id: REQ-002
+  source_text: Given an authenticated admin and an existing user, when they create a user with the same email, then
+    the API returns 409 with "Email already exists".
+- id: AC-003
+  title: Create a user with an empty email -> the API returns 422
+  type: negative
+  given: an authenticated admin
+  when: they create a user with an empty email
+  then: the API returns 422
+  channels:
+  - api
+  inputs:
+    name: valid
+    email: empty
+    role: valid
+  expected_ui: null
+  expected_api:
+    kind: status
+    value: '422'
+    negate: false
+    status_code: 422
+    body_contains: ''
+    validate_schema: false
+  api:
+    method: POST
+    path: /api/users
+    operation_id: createUser
+    auth: true
+    precondition: none
+  start_page: ''
+  requirement_id: REQ-002
+  source_text: Given an authenticated admin, when they create a user with an empty email, then the API returns 422.
+- id: AC-004
+  title: Retrieve the user by id -> the API returns 200 and the user
+  type: positive
+  given: an authenticated admin and an existing user
+  when: they retrieve the user by id
+  then: the API returns 200 and the user
+  channels:
+  - api
+  inputs: {}
+  expected_ui: null
+  expected_api:
+    kind: status
+    value: '200'
+    negate: false
+    status_code: 200
+    body_contains: ''
+    validate_schema: true
+  api:
+    method: GET
+    path: /api/users/{user_id}
+    operation_id: getUser
+    auth: true
+    precondition: existing_resource
+  start_page: ''
+  requirement_id: REQ-002
+  source_text: Given an authenticated admin and an existing user, when they retrieve the user by id, then the API
+    returns 200 and the user.
+- id: AC-005
+  title: List users -> the API returns 200 and the list of users
+  type: positive
+  given: an authenticated admin
+  when: they list users
+  then: the API returns 200 and the list of users
+  channels:
+  - api
+  inputs: {}
+  expected_ui: null
+  expected_api:
+    kind: status
+    value: '200'
+    negate: false
+    status_code: 200
+    body_contains: ''
+    validate_schema: true
+  api:
+    method: GET
+    path: /api/users
+    operation_id: listUsers
+    auth: true
+    precondition: none
+  start_page: ''
+  requirement_id: REQ-002
+  source_text: Given an authenticated admin, when they list users, then the API returns 200 and the list of users.
+- id: AC-006
+  title: Update the user with a valid name, email and role -> the API returns 200 and the updated user
+  type: positive
+  given: an authenticated admin and an existing user
+  when: they update the user with a valid name, email and role
+  then: the API returns 200 and the updated user
+  channels:
+  - api
+  inputs:
+    name: valid
+    email: valid
+    role: valid
+  expected_ui: null
+  expected_api:
+    kind: status
+    value: '200'
+    negate: false
+    status_code: 200
+    body_contains: ''
+    validate_schema: true
+  api:
+    method: PUT
+    path: /api/users/{user_id}
+    operation_id: replaceUser
+    auth: true
+    precondition: existing_resource
+  start_page: ''
+  requirement_id: REQ-002
+  source_text: Given an authenticated admin and an existing user, when they update the user with a valid name, email
+    and role, then the API returns 200 and the updated user.
+- id: AC-007
+  title: Partially update the user role -> the API returns 200 and the updated user
+  type: positive
+  given: an authenticated admin and an existing user
+  when: they partially update the user role
+  then: the API returns 200 and the updated user
+  channels:
+  - api
+  inputs:
+    role: valid
+  expected_ui: null
+  expected_api:
+    kind: status
+    value: '200'
+    negate: false
+    status_code: 200
+    body_contains: ''
+    validate_schema: true
+  api:
+    method: PATCH
+    path: /api/users/{user_id}
+    operation_id: updateUser
+    auth: true
+    precondition: existing_resource
+  start_page: ''
+  requirement_id: REQ-002
+  source_text: Given an authenticated admin and an existing user, when they partially update the user role, then
+    the API returns 200 and the updated user.
+- id: AC-008
+  title: Delete the user -> the API returns 204
+  type: positive
+  given: an authenticated admin and an existing user
+  when: they delete the user
+  then: the API returns 204
+  channels:
+  - api
+  inputs: {}
+  expected_ui: null
+  expected_api:
+    kind: status
+    value: '204'
+    negate: false
+    status_code: 204
+    body_contains: ''
+    validate_schema: false
+  api:
+    method: DELETE
+    path: /api/users/{user_id}
+    operation_id: deleteUser
+    auth: true
+    precondition: existing_resource
+  start_page: ''
+  requirement_id: REQ-002
+  source_text: Given an authenticated admin and an existing user, when they delete the user, then the API returns
+    204.
+- id: AC-009
+  title: List users -> the API returns 401
+  type: negative
+  given: an unauthenticated client
+  when: they list users
+  then: the API returns 401
+  channels:
+  - api
+  inputs: {}
+  expected_ui: null
+  expected_api:
+    kind: status
+    value: '401'
+    negate: false
+    status_code: 401
+    body_contains: ''
+    validate_schema: false
+  api:
+    method: GET
+    path: /api/users
+    operation_id: listUsers
+    auth: false
+    precondition: none
+  start_page: ''
+  requirement_id: REQ-002
+  source_text: Given an unauthenticated client, when they list users, then the API returns 401.

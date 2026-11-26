@@ -1,0 +1,18 @@
+# SPEC-LOGIN-001 - coverage
+spec_id: SPEC-LOGIN-001
+spec_version: '1.0'
+passed: true
+ac_total: 6
+ac_covered: 6
+uncovered_acs: []
+scenarios_by_type:
+  positive: 2
+  negative: 6
+  boundary: 2
+findings:
+- code: BOUNDARY_NOT_SPECIFIED
+  severity: info
+  message: '''email'' has length rules but no boundary AC; no boundary scenario was generated (agents must not invent
+    acceptance criteria).'
+  artifact_id: email
+  source: rule

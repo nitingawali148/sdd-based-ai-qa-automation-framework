@@ -1,0 +1,304 @@
+# SPEC-LOGIN-001 - automation
+spec_id: SPEC-LOGIN-001
+spec_version: '1.0'
+feature: user-login
+framework: python-playwright-pytest-pom + httpx
+ui:
+  spec_id: SPEC-LOGIN-001
+  spec_version: '1.0'
+  pages:
+  - page: Login
+    class_name: LoginPage
+    module: login_page
+    path: /login
+    locators:
+    - key: email
+      strategy: label
+      value: Email
+      role: ''
+    - key: password
+      strategy: label
+      value: Password
+      role: ''
+    - key: sign_in
+      strategy: role
+      value: Sign in
+      role: button
+    form_fields:
+      email: email
+      password: password
+    submit_key: sign_in
+  - page: Dashboard
+    class_name: DashboardPage
+    module: dashboard_page
+    path: /dashboard
+    locators:
+    - key: dashboard
+      strategy: role
+      value: Dashboard
+      role: heading
+    - key: sign_out
+      strategy: role
+      value: Sign out
+      role: button
+    form_fields: {}
+    submit_key: sign_out
+  tests:
+  - automation_id: UI-TEST-LOGIN-001
+    test_case_id: TC-LOGIN-001
+    function_name: test_tc_login_001_submit_a_valid_email_and_password
+    start_page: Login
+    fill:
+      email: valid
+      password: valid
+    submit: true
+    assertion:
+      kind: navigate
+      value: Dashboard
+      negate: false
+      status_code: null
+      body_contains: ''
+      validate_schema: false
+  - automation_id: UI-TEST-LOGIN-003
+    test_case_id: TC-LOGIN-003
+    function_name: test_tc_login_003_submit_an_invalid_password
+    start_page: Login
+    fill:
+      email: valid
+      password: invalid
+    submit: true
+    assertion:
+      kind: message
+      value: Invalid email or password
+      negate: false
+      status_code: null
+      body_contains: ''
+      validate_schema: false
+  - automation_id: UI-TEST-LOGIN-005
+    test_case_id: TC-LOGIN-005
+    function_name: test_tc_login_005_submits_an_empty_email
+    start_page: Login
+    fill:
+      email: empty
+      password: valid
+    submit: true
+    assertion:
+      kind: message
+      value: Email is required
+      negate: false
+      status_code: null
+      body_contains: ''
+      validate_schema: false
+  - automation_id: UI-TEST-LOGIN-006
+    test_case_id: TC-LOGIN-006
+    function_name: test_tc_login_006_submits_an_empty_password
+    start_page: Login
+    fill:
+      email: valid
+      password: empty
+    submit: true
+    assertion:
+      kind: message
+      value: Password is required
+      negate: false
+      status_code: null
+      body_contains: ''
+      validate_schema: false
+  - automation_id: UI-TEST-LOGIN-007
+    test_case_id: TC-LOGIN-007
+    function_name: test_tc_login_007_submits_it_with_a_password
+    start_page: Login
+    fill:
+      email: unregistered
+      password: valid
+    submit: true
+    assertion:
+      kind: message
+      value: Invalid email or password
+      negate: false
+      status_code: null
+      body_contains: ''
+      validate_schema: false
+  - automation_id: UI-TEST-LOGIN-009
+    test_case_id: TC-LOGIN-009
+    function_name: test_tc_login_009_submits_a_password_shorter_than_8_characters
+    start_page: Login
+    fill:
+      email: valid
+      password: too_short
+    submit: true
+    assertion:
+      kind: message
+      value: Password must be at least 8 characters
+      negate: false
+      status_code: null
+      body_contains: ''
+      validate_schema: false
+  - automation_id: UI-TEST-LOGIN-010
+    test_case_id: TC-LOGIN-010
+    function_name: test_tc_login_010_password_with_exactly_8_characters_does_not
+    start_page: Login
+    fill:
+      email: valid
+      password: at_min
+    submit: true
+    assertion:
+      kind: message
+      value: Password must be at least 8 characters
+      negate: true
+      status_code: null
+      body_contains: ''
+      validate_schema: false
+  generated_by: offline-rule-engine
+api:
+  spec_id: SPEC-LOGIN-001
+  spec_version: '1.0'
+  tests:
+  - automation_id: API-TEST-LOGIN-002
+    test_case_id: TC-LOGIN-002
+    function_name: test_tc_login_002_submit_a_valid_email_and_password
+    method: POST
+    path: /api/auth/login
+    operation_id: login
+    auth: false
+    precondition: none
+    payload:
+      email: valid
+      password: valid
+    expected_status: 200
+    body_contains: access_token
+    validate_schema: false
+    destructive: false
+  - automation_id: API-TEST-LOGIN-004
+    test_case_id: TC-LOGIN-004
+    function_name: test_tc_login_004_submit_an_invalid_password
+    method: POST
+    path: /api/auth/login
+    operation_id: login
+    auth: false
+    precondition: none
+    payload:
+      email: valid
+      password: invalid
+    expected_status: 401
+    body_contains: Invalid email or password
+    validate_schema: false
+    destructive: false
+  - automation_id: API-TEST-LOGIN-008
+    test_case_id: TC-LOGIN-008
+    function_name: test_tc_login_008_submits_it_with_a_password
+    method: POST
+    path: /api/auth/login
+    operation_id: login
+    auth: false
+    precondition: none
+    payload:
+      email: unregistered
+      password: valid
+    expected_status: 401
+    body_contains: Invalid email or password
+    validate_schema: false
+    destructive: false
+  generated_by: offline-rule-engine
+scripts:
+- automation_id: API-TEST-LOGIN-002
+  test_case_id: TC-LOGIN-002
+  ac_ids:
+  - AC-001
+  channel: api
+  file: api/tests/test_user_login_api.py
+  function: test_tc_login_002_submit_a_valid_email_and_password
+  code_hash: 95c5153dd551f5f9
+  ac_hash: c32e81e34e758d29
+  spec_version: '1.0'
+- automation_id: API-TEST-LOGIN-004
+  test_case_id: TC-LOGIN-004
+  ac_ids:
+  - AC-002
+  channel: api
+  file: api/tests/test_user_login_api.py
+  function: test_tc_login_004_submit_an_invalid_password
+  code_hash: 7418c2a9c468b595
+  ac_hash: f65ed310fb478d6a
+  spec_version: '1.0'
+- automation_id: API-TEST-LOGIN-008
+  test_case_id: TC-LOGIN-008
+  ac_ids:
+  - AC-005
+  channel: api
+  file: api/tests/test_user_login_api.py
+  function: test_tc_login_008_submits_it_with_a_password
+  code_hash: 588c305e10b72cf8
+  ac_hash: 30e5018e8624b349
+  spec_version: '1.0'
+- automation_id: UI-TEST-LOGIN-001
+  test_case_id: TC-LOGIN-001
+  ac_ids:
+  - AC-001
+  channel: ui
+  file: ui/tests/test_user_login.py
+  function: test_tc_login_001_submit_a_valid_email_and_password
+  code_hash: 122677d0cfd81bab
+  ac_hash: c32e81e34e758d29
+  spec_version: '1.0'
+- automation_id: UI-TEST-LOGIN-003
+  test_case_id: TC-LOGIN-003
+  ac_ids:
+  - AC-002
+  channel: ui
+  file: ui/tests/test_user_login.py
+  function: test_tc_login_003_submit_an_invalid_password
+  code_hash: 6f4cac567e91f53a
+  ac_hash: f65ed310fb478d6a
+  spec_version: '1.0'
+- automation_id: UI-TEST-LOGIN-005
+  test_case_id: TC-LOGIN-005
+  ac_ids:
+  - AC-003
+  channel: ui
+  file: ui/tests/test_user_login.py
+  function: test_tc_login_005_submits_an_empty_email
+  code_hash: cbb62e6cec4bd116
+  ac_hash: eae7857569b8f21d
+  spec_version: '1.0'
+- automation_id: UI-TEST-LOGIN-006
+  test_case_id: TC-LOGIN-006
+  ac_ids:
+  - AC-004
+  channel: ui
+  file: ui/tests/test_user_login.py
+  function: test_tc_login_006_submits_an_empty_password
+  code_hash: 72d1fd557208df36
+  ac_hash: caa11d0a94a85131
+  spec_version: '1.0'
+- automation_id: UI-TEST-LOGIN-007
+  test_case_id: TC-LOGIN-007
+  ac_ids:
+  - AC-005
+  channel: ui
+  file: ui/tests/test_user_login.py
+  function: test_tc_login_007_submits_it_with_a_password
+  code_hash: 3c177b7520cdab20
+  ac_hash: 30e5018e8624b349
+  spec_version: '1.0'
+- automation_id: UI-TEST-LOGIN-009
+  test_case_id: TC-LOGIN-009
+  ac_ids:
+  - AC-006
+  channel: ui
+  file: ui/tests/test_user_login.py
+  function: test_tc_login_009_submits_a_password_shorter_than_8_characters
+  code_hash: afb4ba1cc0de1312
+  ac_hash: cc1bf909cc6eb56e
+  spec_version: '1.0'
+- automation_id: UI-TEST-LOGIN-010
+  test_case_id: TC-LOGIN-010
+  ac_ids:
+  - AC-006
+  channel: ui
+  file: ui/tests/test_user_login.py
+  function: test_tc_login_010_password_with_exactly_8_characters_does_not
+  code_hash: 7f451a57d80819bd
+  ac_hash: cc1bf909cc6eb56e
+  spec_version: '1.0'
+updated_at: '2026-11-26T15:07:40+00:00'

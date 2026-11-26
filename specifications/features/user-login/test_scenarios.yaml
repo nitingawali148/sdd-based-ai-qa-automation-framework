@@ -1,0 +1,264 @@
+# SPEC-LOGIN-001 - scenarios
+spec_id: SPEC-LOGIN-001
+spec_version: '1.0'
+scenarios:
+- id: TS-LOGIN-001
+  key: AC-001:ui:base
+  title: Submit a valid email and password -> they are navigated to the Dashboard page [UI]
+  type: positive
+  channel: ui
+  ac_ids:
+  - AC-001
+  inputs:
+    email: valid
+    password: valid
+  expected:
+    kind: navigate
+    value: Dashboard
+    negate: false
+    status_code: null
+    body_contains: ''
+    validate_schema: false
+  priority: P1
+  tags:
+  - functional
+  - regression
+  - smoke
+  spec_id: SPEC-LOGIN-001
+  spec_version: '1.0'
+  ac_hash: c32e81e34e758d29
+  status: active
+- id: TS-LOGIN-002
+  key: AC-001:api:base
+  title: Submit a valid email and password -> they are navigated to the Dashboard page [API]
+  type: positive
+  channel: api
+  ac_ids:
+  - AC-001
+  inputs:
+    email: valid
+    password: valid
+  expected:
+    kind: status
+    value: '200'
+    negate: false
+    status_code: 200
+    body_contains: access_token
+    validate_schema: false
+  priority: P1
+  tags:
+  - functional
+  - regression
+  - smoke
+  spec_id: SPEC-LOGIN-001
+  spec_version: '1.0'
+  ac_hash: c32e81e34e758d29
+  status: active
+- id: TS-LOGIN-003
+  key: AC-002:ui:base
+  title: Submit an invalid password -> "Invalid email or password" shown [UI]
+  type: negative
+  channel: ui
+  ac_ids:
+  - AC-002
+  inputs:
+    email: valid
+    password: invalid
+  expected:
+    kind: message
+    value: Invalid email or password
+    negate: false
+    status_code: null
+    body_contains: ''
+    validate_schema: false
+  priority: P2
+  tags:
+  - functional
+  - regression
+  spec_id: SPEC-LOGIN-001
+  spec_version: '1.0'
+  ac_hash: f65ed310fb478d6a
+  status: active
+- id: TS-LOGIN-004
+  key: AC-002:api:base
+  title: Submit an invalid password -> "Invalid email or password" shown [API]
+  type: negative
+  channel: api
+  ac_ids:
+  - AC-002
+  inputs:
+    email: valid
+    password: invalid
+  expected:
+    kind: status
+    value: '401'
+    negate: false
+    status_code: 401
+    body_contains: Invalid email or password
+    validate_schema: false
+  priority: P2
+  tags:
+  - functional
+  - regression
+  spec_id: SPEC-LOGIN-001
+  spec_version: '1.0'
+  ac_hash: f65ed310fb478d6a
+  status: active
+- id: TS-LOGIN-005
+  key: AC-003:ui:base
+  title: Submits an empty email -> "Email is required" shown [UI]
+  type: negative
+  channel: ui
+  ac_ids:
+  - AC-003
+  inputs:
+    email: empty
+    password: valid
+  expected:
+    kind: message
+    value: Email is required
+    negate: false
+    status_code: null
+    body_contains: ''
+    validate_schema: false
+  priority: P2
+  tags:
+  - functional
+  - regression
+  spec_id: SPEC-LOGIN-001
+  spec_version: '1.0'
+  ac_hash: eae7857569b8f21d
+  status: active
+- id: TS-LOGIN-006
+  key: AC-004:ui:base
+  title: Submits an empty password -> "Password is required" shown [UI]
+  type: negative
+  channel: ui
+  ac_ids:
+  - AC-004
+  inputs:
+    email: valid
+    password: empty
+  expected:
+    kind: message
+    value: Password is required
+    negate: false
+    status_code: null
+    body_contains: ''
+    validate_schema: false
+  priority: P2
+  tags:
+  - functional
+  - regression
+  spec_id: SPEC-LOGIN-001
+  spec_version: '1.0'
+  ac_hash: caa11d0a94a85131
+  status: active
+- id: TS-LOGIN-007
+  key: AC-005:ui:base
+  title: Submits it with a password -> "Invalid email or password" shown [UI]
+  type: negative
+  channel: ui
+  ac_ids:
+  - AC-005
+  inputs:
+    email: unregistered
+    password: valid
+  expected:
+    kind: message
+    value: Invalid email or password
+    negate: false
+    status_code: null
+    body_contains: ''
+    validate_schema: false
+  priority: P2
+  tags:
+  - functional
+  - regression
+  spec_id: SPEC-LOGIN-001
+  spec_version: '1.0'
+  ac_hash: 30e5018e8624b349
+  status: active
+- id: TS-LOGIN-008
+  key: AC-005:api:base
+  title: Submits it with a password -> "Invalid email or password" shown [API]
+  type: negative
+  channel: api
+  ac_ids:
+  - AC-005
+  inputs:
+    email: unregistered
+    password: valid
+  expected:
+    kind: status
+    value: '401'
+    negate: false
+    status_code: 401
+    body_contains: Invalid email or password
+    validate_schema: false
+  priority: P2
+  tags:
+  - functional
+  - regression
+  spec_id: SPEC-LOGIN-001
+  spec_version: '1.0'
+  ac_hash: 30e5018e8624b349
+  status: active
+- id: TS-LOGIN-009
+  key: AC-006:ui:base
+  title: Submits a password shorter than 8 characters -> "Password must be at least 8 characters" shown [UI]
+  type: boundary
+  channel: ui
+  ac_ids:
+  - AC-006
+  inputs:
+    email: valid
+    password: too_short
+  expected:
+    kind: message
+    value: Password must be at least 8 characters
+    negate: false
+    status_code: null
+    body_contains: ''
+    validate_schema: false
+  priority: P2
+  tags:
+  - functional
+  - regression
+  spec_id: SPEC-LOGIN-001
+  spec_version: '1.0'
+  ac_hash: cc1bf909cc6eb56e
+  status: active
+- id: TS-LOGIN-010
+  key: AC-006:ui:at_min:password
+  title: password with exactly 8 characters does not show "Password must be at least 8 characters" [UI]
+  type: boundary
+  channel: ui
+  ac_ids:
+  - AC-006
+  inputs:
+    email: valid
+    password: at_min
+  expected:
+    kind: message
+    value: Password must be at least 8 characters
+    negate: true
+    status_code: null
+    body_contains: ''
+    validate_schema: false
+  priority: P2
+  tags:
+  - functional
+  - regression
+  spec_id: SPEC-LOGIN-001
+  spec_version: '1.0'
+  ac_hash: cc1bf909cc6eb56e
+  status: active
+coverage_notes:
+- code: BOUNDARY_NOT_SPECIFIED
+  severity: info
+  message: '''email'' has length rules but no boundary AC; no boundary scenario was generated (agents must not invent
+    acceptance criteria).'
+  artifact_id: email
+  source: rule
+generated_by: offline-rule-engine

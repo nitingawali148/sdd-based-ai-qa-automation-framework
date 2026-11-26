@@ -1,0 +1,49 @@
+# SPEC-RESET-001 v1.0 - feature specification (source of truth)
+id: SPEC-RESET-001
+version: '1.0'
+title: Password Reset
+feature: password-reset
+feature_code: RESET
+requirement_ids:
+- REQ-003
+status: NEEDS_CLARIFICATION
+priority: P2
+objective: As a user who forgot my password, I want to reset it so that I can log in again.
+user_story: As a user who forgot my password, I want to reset it so that I can log in again.
+functional_requirements:
+- id: FR-001
+  text: The user must provide Email (email, required).
+- id: FR-002
+  text: The system must provide the Forgot Password page at /forgot-password.
+business_rules:
+- id: BR-001
+  text: The reset link should expire after an appropriate time.
+- id: BR-002
+  text: The new password must be secure.
+inputs:
+- name: email
+  type: email
+  required: true
+  min_length: null
+  max_length: null
+  pattern: null
+  enum: []
+  label: Email
+  description: ''
+ui_pages:
+- name: Forgot Password
+  path: /forgot-password
+  elements:
+  - label: Email
+    role: textbox
+  - label: Send reset link
+    role: button
+api_endpoints: []
+non_functional: []
+dependencies: []
+open_questions:
+- 'TBD: how long is the reset link valid?'
+generated_by: offline-rule-engine
+created_at: '2026-11-26T14:50:35+00:00'
+updated_at: '2026-11-26T14:50:35+00:00'
+source_requirement_hash: 90b45993b17b36df

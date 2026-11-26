@@ -1,0 +1,31 @@
+# Test data - values are expressions resolved at runtime; no hard-coded credentials
+feature: user-management
+spec_id: SPEC-USERS-001
+spec_version: '1.0'
+fields:
+  name:
+    empty: ''
+    missing: ${omit}
+    valid: ${faker:name}
+    invalid: ${repeat:x:101}
+    too_short: ${repeat:x:0}
+    at_min: ${repeat:x:1}
+    too_long: ${repeat:x:101}
+    at_max: ${repeat:x:100}
+  email:
+    empty: ''
+    missing: ${omit}
+    valid: ${faker:unique_email}
+    unregistered: ${faker:unique_email}
+    duplicate: ${faker:unique_email}
+    malformed: not-an-email
+    invalid: not-an-email
+  role:
+    empty: ''
+    missing: ${omit}
+    valid: admin
+    invalid: not-a-valid-option
+notes:
+- Credentials are referenced as ${env:VAR}; values live in .env (never in this file).
+- ${faker:...} values are generated at runtime, unique per call; ${omit} removes the field.
+generated_by: offline-rule-engine

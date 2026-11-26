@@ -1,0 +1,28 @@
+# Requirement Traceability Matrix
+
+| Requirement | Spec | AC | Scenario | Test case | Channel | Automation | Last result | Outdated |
+|---|---|---|---|---|---|---|---|---|
+| REQ-001 | SPEC-LOGIN-001 v1.0 | AC-001 | TS-LOGIN-001 | TC-LOGIN-001 | UI | UI-TEST-LOGIN-001 | passed |  |
+| REQ-001 | SPEC-LOGIN-001 v1.0 | AC-001 | TS-LOGIN-002 | TC-LOGIN-002 | API | API-TEST-LOGIN-002 | passed |  |
+| REQ-001 | SPEC-LOGIN-001 v1.0 | AC-002 | TS-LOGIN-003 | TC-LOGIN-003 | UI | UI-TEST-LOGIN-003 | passed |  |
+| REQ-001 | SPEC-LOGIN-001 v1.0 | AC-002 | TS-LOGIN-004 | TC-LOGIN-004 | API | API-TEST-LOGIN-004 | passed |  |
+| REQ-001 | SPEC-LOGIN-001 v1.0 | AC-003 | TS-LOGIN-005 | TC-LOGIN-005 | UI | UI-TEST-LOGIN-005 | passed |  |
+| REQ-001 | SPEC-LOGIN-001 v1.0 | AC-004 | TS-LOGIN-006 | TC-LOGIN-006 | UI | UI-TEST-LOGIN-006 | passed |  |
+| REQ-001 | SPEC-LOGIN-001 v1.0 | AC-005 | TS-LOGIN-007 | TC-LOGIN-007 | UI | UI-TEST-LOGIN-007 | passed |  |
+| REQ-001 | SPEC-LOGIN-001 v1.0 | AC-005 | TS-LOGIN-008 | TC-LOGIN-008 | API | API-TEST-LOGIN-008 | passed |  |
+| REQ-001 | SPEC-LOGIN-001 v1.0 | AC-006 | TS-LOGIN-009 | TC-LOGIN-009 | UI | UI-TEST-LOGIN-009 | passed |  |
+| REQ-001 | SPEC-LOGIN-001 v1.0 | AC-006 | TS-LOGIN-010 | TC-LOGIN-010 | UI | UI-TEST-LOGIN-010 | passed |  |
+| REQ-003 | SPEC-RESET-001 v1.0 | AC-001 |  |  |  |  | not run |  |
+| REQ-003 | SPEC-RESET-001 v1.0 | AC-002 |  |  |  |  | not run |  |
+| REQ-002 | SPEC-USERS-001 v1.0 | AC-001 | TS-USERS-001 | TC-USERS-001 | API | API-TEST-USERS-001 | passed |  |
+| REQ-002 | SPEC-USERS-001 v1.0 | AC-002 | TS-USERS-002 | TC-USERS-002 | API | API-TEST-USERS-002 | passed |  |
+| REQ-002 | SPEC-USERS-001 v1.0 | AC-003 | TS-USERS-003 | TC-USERS-003 | API | API-TEST-USERS-003 | passed |  |
+| REQ-002 | SPEC-USERS-001 v1.0 | AC-004 | TS-USERS-004 | TC-USERS-004 | API | API-TEST-USERS-004 | passed |  |
+| REQ-002 | SPEC-USERS-001 v1.0 | AC-005 | TS-USERS-005 | TC-USERS-005 | API | API-TEST-USERS-005 | passed |  |
+| REQ-002 | SPEC-USERS-001 v1.0 | AC-006 | TS-USERS-006 | TC-USERS-006 | API | API-TEST-USERS-006 | passed |  |
+| REQ-002 | SPEC-USERS-001 v1.0 | AC-007 | TS-USERS-007 | TC-USERS-007 | API | API-TEST-USERS-007 | passed |  |
+| REQ-002 | SPEC-USERS-001 v1.0 | AC-008 | TS-USERS-008 | TC-USERS-008 | API | API-TEST-USERS-008 | passed |  |
+| REQ-002 | SPEC-USERS-001 v1.0 | AC-009 | TS-USERS-009 | TC-USERS-009 | API | API-TEST-USERS-009 | passed |  |
+
+Uncovered requirements: REQ-003
+Outdated scripts: 0

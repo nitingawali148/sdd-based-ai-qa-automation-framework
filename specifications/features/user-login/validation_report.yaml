@@ -1,0 +1,28 @@
+# SPEC-LOGIN-001 - validation
+spec_id: SPEC-LOGIN-001
+spec_version: '1.0'
+passed: true
+findings:
+- code: MISSING_BOUNDARY_SCENARIO
+  severity: warning
+  message: Field 'email' has length rules (max 254 characters) but no boundary acceptance criterion
+  artifact_id: email
+  source: rule
+- code: MISSING_FORMAT_SCENARIO
+  severity: info
+  message: No acceptance criterion covers a malformed 'email'
+  artifact_id: email
+  source: rule
+- code: SHARED_MESSAGE
+  severity: info
+  message: AC-002, AC-005 expect the same message "Invalid email or password". Confirm this is intentional (e.g.
+    not revealing which credential was wrong).
+  artifact_id: AC-002,AC-005
+  source: ai
+- code: AGENT_SUMMARY
+  severity: info
+  message: 'SPEC-LOGIN-001 v1.0: 6 acceptance criteria reviewed, 0 blocking issue(s), 1 warning(s). Ready for human
+    approval.'
+  artifact_id: ''
+  source: ai
+checked_at: '2026-11-26T14:50:12+00:00'

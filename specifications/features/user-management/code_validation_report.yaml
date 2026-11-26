@@ -1,0 +1,7 @@
+# SPEC-USERS-001 - code validation
+spec_id: SPEC-USERS-001
+passed: true
+files:
+- api/tests/test_user_management_api.py
+findings: []
+bundle_hash: 6c56e615e690dd11

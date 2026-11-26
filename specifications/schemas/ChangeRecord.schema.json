@@ -1,0 +1,171 @@
+{
+  "$defs": {
+    "ACChange": {
+      "properties": {
+        "ac_id": {
+          "title": "Ac Id",
+          "type": "string"
+        },
+        "change": {
+          "enum": [
+            "added",
+            "modified",
+            "removed"
+          ],
+          "title": "Change",
+          "type": "string"
+        },
+        "old": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Old"
+        },
+        "new": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "New"
+        },
+        "fields_changed": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Fields Changed",
+          "type": "array"
+        }
+      },
+      "required": [
+        "ac_id",
+        "change"
+      ],
+      "title": "ACChange",
+      "type": "object"
+    },
+    "ImpactSet": {
+      "properties": {
+        "acceptance_criteria": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Acceptance Criteria",
+          "type": "array"
+        },
+        "scenarios": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Scenarios",
+          "type": "array"
+        },
+        "test_cases": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Test Cases",
+          "type": "array"
+        },
+        "scripts": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Scripts",
+          "type": "array"
+        },
+        "unaffected_test_cases": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Unaffected Test Cases",
+          "type": "array"
+        }
+      },
+      "title": "ImpactSet",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "spec_id": {
+      "title": "Spec Id",
+      "type": "string"
+    },
+    "from_version": {
+      "title": "From Version",
+      "type": "string"
+    },
+    "to_version": {
+      "title": "To Version",
+      "type": "string"
+    },
+    "created_at": {
+      "title": "Created At",
+      "type": "string"
+    },
+    "ac_changes": {
+      "items": {
+        "$ref": "#/$defs/ACChange"
+      },
+      "title": "Ac Changes",
+      "type": "array"
+    },
+    "other_changes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Other Changes",
+      "type": "array"
+    },
+    "impact": {
+      "$ref": "#/$defs/ImpactSet"
+    },
+    "status": {
+      "default": "PENDING_SPEC_APPROVAL",
+      "enum": [
+        "PENDING_SPEC_APPROVAL",
+        "REGENERATED",
+        "EXECUTED",
+        "NO_CHANGE"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "analysis": {
+      "default": "",
+      "title": "Analysis",
+      "type": "string"
+    },
+    "history": {
+      "items": {
+        "type": "string"
+      },
+      "title": "History",
+      "type": "array"
+    }
+  },
+  "required": [
+    "id",
+    "spec_id",
+    "from_version",
+    "to_version"
+  ],
+  "title": "ChangeRecord",
+  "type": "object"
+}

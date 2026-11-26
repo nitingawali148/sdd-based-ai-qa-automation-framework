@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SDD QA Dashboard</title>
+<style>
+:root{
+  color-scheme: light;
+  --bg:#f5f6fa; --surface:#ffffff; --border:#e3e5ec; --text:#191919; --muted:#666666;
+  --accent:#6a4ce2; --accent-soft:#efeafe;
+  --series-1:#257de0; --series-2:#f47230;
+  --good:#0aac23; --warning:#fbb315; --serious:#f18a59; --critical:#dc3c3d; --neutral:#9c9c9c;
+  --grid:#ececf1;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:#111114; --surface:#191919; --border:#2c2c33; --text:#efefef; --muted:#9c9c9c;
+    --accent:#9887ef; --accent-soft:#26213f; --series-1:#338ced; --series-2:#e76624; --grid:#2a2a30;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#111114; --surface:#191919; --border:#2c2c33; --text:#efefef; --muted:#9c9c9c;
+  --accent:#9887ef; --accent-soft:#26213f; --series-1:#338ced; --series-2:#e76624; --grid:#2a2a30;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{background:linear-gradient(120deg,#4f46e5,#7c3aed 55%,#db2777);color:#fff;padding:24px 24px 18px}
+header h1{margin:0;font-size:22px}
+header p{margin:4px 0 0;opacity:.9}
+nav{position:sticky;top:0;z-index:5;background:var(--surface);border-bottom:1px solid var(--border);
+  display:flex;gap:4px;overflow-x:auto;padding:6px 16px}
+nav a{color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:6px;white-space:nowrap;font-weight:500}
+nav a:hover{background:var(--accent-soft);color:var(--accent)}
+main{max-width:1320px;margin:0 auto;padding:20px 16px 48px;display:grid;gap:20px}
+section{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px}
+section h2{margin:0 0 4px;font-size:17px}
+.sub{color:var(--muted);margin:0 0 14px;font-size:13px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.tile{border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.tile .k{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+.tile .v{font-size:26px;font-weight:650;font-variant-numeric:tabular-nums}
+.tile .d{color:var(--muted);font-size:12px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px}
+.chart{position:relative;height:260px}
+.table-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--border);vertical-align:top}
+th{color:var(--muted);font-weight:600;position:sticky;top:0;background:var(--surface)}
+tr:hover td{background:var(--accent-soft)}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:1px 8px;border-radius:999px;font-size:12px;
+  font-weight:600;border:1px solid currentColor;white-space:nowrap}
+.b-passed,.b-APPROVED,.b-PASSED{color:var(--good)} .b-failed,.b-error,.b-NEEDS_CLARIFICATION,.b-BLOCKED{color:var(--critical)}
+.b-skipped,.b-not-run,.b-DRAFT,.b-SUPERSEDED{color:var(--neutral)} .b-VALIDATED,.b-AWAITING{color:#b07800}
+.b-ai{color:var(--accent)}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.filters select,.filters input{padding:6px 8px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text)}
+.mermaid{background:#fff;border-radius:8px;padding:8px;overflow-x:auto}
+.ai-box{border:1px dashed var(--accent);background:var(--accent-soft);border-radius:10px;padding:12px 14px}
+.ai-box h3{margin:0 0 6px;font-size:14px;color:var(--accent)}
+.muted{color:var(--muted)}
+code{font-size:12px}
+details summary{cursor:pointer;color:var(--accent);font-weight:600}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:6px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:middle}
+</style>
+</head>
+<body>
+<header>
+  <h1>Spec-Driven QA Dashboard</h1>
+  <p>Generated {{ data.generated_at }} · LLM provider: <b>{{ data.llm }}</b> · Specifications are the single source of truth</p>
+</header>
+<nav>
+  <a href="#overview">Overview</a><a href="#workflow">SDD workflow</a><a href="#specs">Specifications</a>
+  <a href="#coverage">Coverage</a><a href="#execution">Execution</a><a href="#failures">Failure analysis</a>
+  <a href="#changes">Change impact</a><a href="#trace">Traceability</a><a href="#agents">Agent history</a>
+  <a href="#architecture">Architecture</a>
+</nav>
+<main>
+
+<section id="overview">
+  <h2>Overview</h2>
+  <p class="sub">Verified figures from specifications, approvals and pytest results.</p>
+  <div class="tiles" id="tiles"></div>
+  {% if data.narrative %}
+  <div class="ai-box" style="margin-top:14px">
+    <h3>AI summary (Reporting Agent, {{ data.narrative.generated_by }}) - interpretation, not verified data</h3>
+    <b>{{ data.narrative.headline|e }}</b>
+    <ul>{% for h in data.narrative.highlights %}<li>{{ h|e }}</li>{% endfor %}
+    {% for r in data.narrative.risks %}<li>⚠ {{ r|e }}</li>{% endfor %}
+    {% for r in data.narrative.recommendations %}<li>→ {{ r|e }}</li>{% endfor %}</ul>
+  </div>
+  {% endif %}
+</section>
+
+<section id="workflow">
+  <h2>1 · SDD workflow</h2>
+  <p class="sub">Every stage consumes the validated output of the previous one; hexagons are human approval gates.</p>
+  <pre class="mermaid">{{ mermaid.lifecycle|e }}</pre>
+</section>
+
+<section id="specs">
+  <h2>2-4 · Specification status, versions and approvals</h2>
+  <p class="sub">Approved versions are immutable snapshots in <code>specifications/approved/</code>.</p>
+  <div class="table-wrap"><table id="spec-table"><thead><tr><th>Spec</th><th>Feature</th><th>Requirement</th>
+  <th>Working version</th><th>Status</th><th>Approved versions</th><th>Superseded</th><th>Spec</th><th>Test cases</th>
+  <th>Scripts</th><th>Validation</th></tr></thead><tbody></tbody></table></div>
+  <details style="margin-top:10px"><summary>Validation findings</summary><div class="table-wrap">
+  <table id="finding-table"><thead><tr><th>Spec</th><th>Severity</th><th>Source</th><th>Code</th><th>Item</th><th>Message</th></tr></thead><tbody></tbody></table></div></details>
+</section>
+
+<section id="coverage">
+  <h2>5-8 · Coverage</h2>
+  <p class="sub">Requirement → acceptance criteria → test cases → automation → execution.</p>
+  <div class="grid2">
+    <div><div class="chart"><canvas id="coverage-chart" aria-label="Coverage by level"></canvas></div></div>
+    <div class="table-wrap"><table id="coverage-table"><thead><tr><th>Level</th><th>Covered</th><th>Total</th><th>%</th></tr></thead><tbody></tbody></table>
+      <p class="muted" id="uncovered"></p></div>
+  </div>
+</section>
+
+<section id="execution">
+  <h2>9-10 · UI and API execution results</h2>
+  <p class="sub">Latest verified outcome per automation script (pytest), and run history.</p>
+  <div class="grid2">
+    <div><div class="chart"><canvas id="channel-chart" aria-label="Latest outcome by channel"></canvas></div>
+      <div class="legend"><span><i style="background:var(--good)"></i>Passed</span><span><i style="background:var(--critical)"></i>Failed</span>
+      <span><i style="background:var(--serious)"></i>Error</span><span><i style="background:var(--neutral)"></i>Skipped</span></div></div>
+    <div><div class="chart"><canvas id="history-chart" aria-label="Execution history"></canvas></div></div>
+  </div>
+  <div class="table-wrap" style="margin-top:12px"><table id="run-table"><thead><tr><th>Execution</th><th>Started</th><th>Env</th>
+  <th>Selection</th><th>Total</th><th>Passed</th><th>Failed</th><th>Skipped</th><th>Error</th><th>Exit</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<section id="failures">
+  <h2>11 · Failure analysis</h2>
+  <p class="sub"><span class="badge b-ai">AI / heuristic analysis</span> Probable causes. Verified results above are never changed by analysis.</p>
+  <div id="fa-summary" class="muted"></div>
+  <div class="table-wrap"><table id="fa-table"><thead><tr><th>Test case</th><th>Automation</th><th>Category</th><th>Confidence</th>
+  <th>Expected</th><th>Actual</th><th>Probable root cause</th><th>Recommendation</th><th>Evidence</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<section id="changes">
+  <h2>12 · Specification change impact</h2>
+  <p class="sub">Only impacted artifacts are regenerated and re-executed; unaffected ones are preserved.</p>
+  <div class="table-wrap"><table id="change-table"><thead><tr><th>Change</th><th>Spec</th><th>Versions</th><th>AC changes</th>
+  <th>Impacted test cases</th><th>Impacted scripts</th><th>Preserved test cases</th><th>Status</th><th>History</th></tr></thead><tbody></tbody></table></div>
+  <details style="margin-top:10px"><summary>Change impact flow</summary><pre class="mermaid">{{ mermaid.change|e }}</pre></details>
+  <h3 style="font-size:14px;margin:14px 0 6px">Outdated scripts</h3><div id="outdated" class="muted"></div>
+</section>
+
+<section id="trace">
+  <h2>13 · Traceability matrix</h2>
+  <p class="sub">REQ → SPEC → AC → TS → TC → automation script → latest execution.</p>
+  <div class="filters">
+    <select id="f-spec"><option value="">All specifications</option></select>
+    <select id="f-channel"><option value="">All channels</option><option value="ui">UI</option><option value="api">API</option></select>
+    <select id="f-outcome"><option value="">All outcomes</option><option>passed</option><option>failed</option><option>skipped</option><option>error</option><option>not run</option></select>
+    <input id="f-text" type="search" placeholder="Search ID or title…">
+  </div>
+  <div class="table-wrap" style="max-height:560px"><table id="trace-table"><thead><tr><th>Requirement</th><th>Spec</th><th>AC</th>
+  <th>Scenario</th><th>Test case</th><th>Channel</th><th>Priority</th><th>Automation</th><th>Script</th><th>Execution</th><th>Outcome</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<section id="agents">
+  <h2>14 · Agent execution history</h2>
+  <p class="sub">From the append-only audit log <code>output/audit/audit.jsonl</code>.</p>
+  <div class="grid2">
+    <div><div class="chart"><canvas id="agent-chart" aria-label="Agent task runs"></canvas></div></div>
+    <div class="table-wrap" style="max-height:300px"><table id="agent-table"><thead><tr><th>Time</th><th>Event</th><th>Agent / flow</th>
+    <th>Task / detail</th><th>Spec</th><th>Status</th></tr></thead><tbody></tbody></table></div>
+  </div>
+</section>
+
+<section id="architecture">
+  <h2>Architecture and collaboration</h2>
+  <div class="grid2">
+    <div><h3 style="font-size:14px">Overall architecture</h3><pre class="mermaid">{{ mermaid.architecture|e }}</pre></div>
+    <div><h3 style="font-size:14px">CrewAI agent collaboration</h3><pre class="mermaid">{{ mermaid.agents|e }}</pre></div>
+  </div>
+  <h3 style="font-size:14px">UI / API automation workflow</h3><pre class="mermaid">{{ mermaid.automation|e }}</pre>
+</section>
+</main>
+
+<script id="sdd-data" type="application/json">{{ data_json }}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+const D = JSON.parse(document.getElementById('sdd-data').textContent);
+const T = D.trace;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const badge = (v, cls) => `<span class="badge b-${esc(cls || String(v).replace(/\s/g,'-'))}">${esc(v)}</span>`;
+const row = cells => '<tr>' + cells.map(c => `<td>${c}</td>`).join('') + '</tr>';
+const fill = (id, rows, empty) => { document.querySelector(`#${id} tbody`).innerHTML =
+  rows.length ? rows.join('') : `<tr><td colspan="12" class="muted">${empty || 'No data yet.'}</td></tr>`; };
+
+// ---- tiles
+const cov = T.coverage, runs = T.executions, last = runs[runs.length - 1];
+const approved = T.specs.filter(s => s.approvals.spec).length;
+const tiles = [
+  ['Specifications', T.specs.length, `${approved} approved · ${T.specs.length - approved} pending`],
+  ['Requirement coverage', cov.requirements.pct + '%', `${cov.requirements.covered}/${cov.requirements.total} requirements`],
+  ['AC coverage', cov.acceptance_criteria.pct + '%', `${cov.acceptance_criteria.covered}/${cov.acceptance_criteria.total} criteria`],
+  ['Automation coverage', cov.automation.pct + '%', `${cov.automation.covered}/${cov.automation.total} test cases`],
+  ['Last run', last ? last.id : '-', last ? `${last.passed} passed · ${last.failed} failed · ${last.skipped} skipped` : 'not executed'],
+  ['Outdated scripts', T.outdated_scripts.length, 'scripts behind their AC'],
+];
+document.getElementById('tiles').innerHTML = tiles.map(([k, v, d]) =>
+  `<div class="tile"><div class="k">${k}</div><div class="v">${esc(v)}</div><div class="d">${esc(d)}</div></div>`).join('');
+
+// ---- specs
+fill('spec-table', T.specs.map(s => row([
+  `<b>${esc(s.spec_id)}</b>`, esc(s.title), esc(s.requirements.join(', ')), esc(s.version), badge(s.status),
+  esc(s.approved_versions.join(', ') || '-'), esc(s.superseded_versions.join(', ') || '-'),
+  ...['spec','test_cases','scripts'].map(k => s.approvals[k] ? badge('approved','APPROVED') : badge('pending','AWAITING')),
+  s.validation.passed === null ? '-' : (s.validation.passed ? badge('passed') : badge('blocked','BLOCKED')) +
+    ` <span class="muted">${s.validation.errors}E/${s.validation.warnings}W</span>`])));
+fill('finding-table', T.specs.flatMap(s => s.validation.findings.filter(f => f.code !== 'AGENT_SUMMARY').map(f => row([
+  esc(s.spec_id), badge(f.severity, f.severity === 'error' ? 'failed' : (f.severity === 'warning' ? 'AWAITING' : 'skipped')),
+  f.source === 'ai' ? badge('AI','ai') : 'rule', esc(f.code), esc(f.artifact_id), esc(f.message)]))));
+
+// ---- coverage
+const levels = [['Requirements', cov.requirements], ['Acceptance criteria', cov.acceptance_criteria],
+  ['Automation', cov.automation], ['Execution', cov.execution], ['Pass rate', cov.pass_rate]];
+fill('coverage-table', levels.map(([n, c]) => row([n, c.covered, c.total, `<b>${c.pct}%</b>`])));
+document.getElementById('uncovered').textContent = 'Uncovered requirements (no approved spec): ' + (T.uncovered_requirements.join(', ') || 'none');
+
+const charts = [];
+function draw() {
+  if (!window.Chart) return;
+  charts.forEach(c => c.destroy()); charts.length = 0;
+  Chart.defaults.color = css('--muted'); Chart.defaults.font.family = 'system-ui, sans-serif';
+  const grid = { color: css('--grid') }, gap = { borderColor: css('--surface'), borderWidth: 2, borderRadius: 4, borderSkipped: false };
+  charts.push(new Chart(document.getElementById('coverage-chart'), { type: 'bar',
+    data: { labels: levels.map(l => l[0]), datasets: [{ label: 'Coverage %', data: levels.map(l => l[1].pct),
+      backgroundColor: css('--series-1'), maxBarThickness: 22, ...gap }] },
+    options: { indexAxis: 'y', maintainAspectRatio: false, plugins: { legend: { display: false },
+      tooltip: { callbacks: { label: c => `${c.raw}% (${levels[c.dataIndex][1].covered}/${levels[c.dataIndex][1].total})` } } },
+      scales: { x: { min: 0, max: 100, grid, ticks: { callback: v => v + '%' } }, y: { grid: { display: false } } } } }));
+  const outcomes = [['passed', '--good', 'Passed'], ['failed', '--critical', 'Failed'], ['error', '--serious', 'Error'], ['skipped', '--neutral', 'Skipped']];
+  const ch = D.channel_outcomes;
+  charts.push(new Chart(document.getElementById('channel-chart'), { type: 'bar',
+    data: { labels: ['UI', 'API'], datasets: outcomes.map(([k, col, lbl]) => ({ label: lbl,
+      data: [ch.ui[k] || 0, ch.api[k] || 0], backgroundColor: css(col), maxBarThickness: 34, ...gap })) },
+    options: { maintainAspectRatio: false, plugins: { legend: { display: false },
+      title: { display: true, text: 'Latest outcome per script, by channel' } },
+      scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, grid, ticks: { precision: 0 } } } } }));
+  charts.push(new Chart(document.getElementById('history-chart'), { type: 'bar',
+    data: { labels: runs.map(r => r.id), datasets: outcomes.map(([k, col, lbl]) => ({ label: lbl,
+      data: runs.map(r => r[k] || 0), backgroundColor: css(col), maxBarThickness: 34, ...gap })) },
+    options: { maintainAspectRatio: false, plugins: { title: { display: true, text: 'Execution history' },
+      legend: { position: 'bottom', labels: { boxWidth: 10 } } },
+      scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, grid, ticks: { precision: 0 } } } } }));
+  const ac = Object.entries(D.agent_counts).sort((a, b) => b[1] - a[1]);
+  charts.push(new Chart(document.getElementById('agent-chart'), { type: 'bar',
+    data: { labels: ac.map(a => a[0]), datasets: [{ label: 'Task runs', data: ac.map(a => a[1]),
+      backgroundColor: css('--series-1'), maxBarThickness: 18, ...gap }] },
+    options: { indexAxis: 'y', maintainAspectRatio: false, plugins: { legend: { display: false },
+      title: { display: true, text: 'Agent task runs (audit log)' } },
+      scales: { x: { grid, ticks: { precision: 0 } }, y: { grid: { display: false }, ticks: { autoSkip: false, font: { size: 11 } } } } } }));
+}
+draw();
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
+
+// ---- runs
+fill('run-table', runs.slice().reverse().map(r => row([`<b>${esc(r.id)}</b>`, esc(r.started_at), esc(r.environment),
+  esc((r.selection.test_case_ids || []).length ? 'TC: ' + r.selection.test_case_ids.join(', ') : (r.selection.spec_ids || []).join(', ') || 'all'),
+  r.total, r.passed, r.failed, r.skipped, r.error, esc(r.exit_code)])), 'No executions yet.');
+
+// ---- failure analysis
+const fa = D.failure_analysis;
+document.getElementById('fa-summary').textContent = fa ? `${fa.execution_id}: ${fa.summary} (generated by ${fa.generated_by})` : 'No analysis yet.';
+fill('fa-table', (fa ? fa.items : []).map(i => row([esc(i.test_case_id), esc(i.automation_id), badge(i.category, 'failed'),
+  Math.round(i.confidence * 100) + '%', esc(i.expected), esc(i.actual), esc(i.root_cause), esc(i.recommendation),
+  i.evidence.map(e => `<code>${esc(e)}</code>`).join('<br>')])), 'No failures in the latest analysed execution.');
+
+// ---- changes
+fill('change-table', D.changes.slice().reverse().map(c => row([`<b>${esc(c.id)}</b>`, esc(c.spec_id),
+  `v${esc(c.from_version)} → v${esc(c.to_version)}`,
+  c.ac_changes.map(a => `${esc(a.ac_id)} ${esc(a.change)}${a.fields_changed.length ? ' (' + esc(a.fields_changed.join(', ')) + ')' : ''}`).join('<br>'),
+  esc(c.impact.test_cases.join(', ') || '-'), c.impact.scripts.map(esc).join('<br>') || '-',
+  `${c.impact.unaffected_test_cases.length} preserved`, badge(c.status, c.status === 'EXECUTED' ? 'passed' : 'AWAITING'),
+  '<details><summary>log</summary>' + c.history.map(esc).join('<br>') + '</details>'])), 'No specification changes yet.');
+document.getElementById('outdated').innerHTML = T.outdated_scripts.length ? T.outdated_scripts.map(o =>
+  `${esc(o.automation_id)} (${esc(o.test_case_id)}, ${esc(o.ac_ids.join(','))}) - ${esc(o.reason)}`).join('<br>') : 'None - every script matches its current acceptance criterion.';
+
+// ---- traceability with filters
+const specSel = document.getElementById('f-spec');
+[...new Set(T.rows.map(r => r.spec_id))].forEach(s => specSel.insertAdjacentHTML('beforeend', `<option>${esc(s)}</option>`));
+function renderTrace() {
+  const s = specSel.value, ch = document.getElementById('f-channel').value, oc = document.getElementById('f-outcome').value,
+    q = document.getElementById('f-text').value.toLowerCase();
+  fill('trace-table', T.rows.filter(r => (!s || r.spec_id === s) && (!ch || r.channel === ch) && (!oc || r.outcome === oc) &&
+    (!q || JSON.stringify(r).toLowerCase().includes(q))).map(r => row([esc(r.requirement), `${esc(r.spec_id)} <span class="muted">v${esc(r.spec_version)}</span>`,
+    `<b>${esc(r.ac_id)}</b><br><span class="muted">${esc(r.ac_title)}</span>`, esc(r.scenario_id),
+    `${esc(r.test_case_id)}<br><span class="muted">${esc(r.test_case_title)}</span>`, esc(r.channel.toUpperCase()), esc(r.priority),
+    esc(r.automation_id) + (r.outdated ? ' ' + badge('outdated', 'failed') : ''), `<code>${esc(r.script)}</code>`, esc(r.execution_id),
+    badge(r.outcome)])), 'No rows match the filters.');
+}
+['f-spec', 'f-channel', 'f-outcome', 'f-text'].forEach(id => document.getElementById(id).addEventListener('input', renderTrace));
+renderTrace();
+
+// ---- agent history
+fill('agent-table', D.history.slice().reverse().slice(0, 150).map(e => row([esc((e.ts || '').replace('T', ' ').slice(0, 19)),
+  esc(e.event), esc(e.agent || e.flow || e.approved_by || ''), esc(e.task || e.stage || e.status || e.change_id || ''),
+  esc(e.spec_id || e.execution_id || ''), e.status ? badge(e.status, e.status === 'success' ? 'passed' : (e.status === 'error' ? 'failed' : 'skipped')) : ''])));
+
+if (window.mermaid) { mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'strict' }); }
+</script>
+</body>
+</html>

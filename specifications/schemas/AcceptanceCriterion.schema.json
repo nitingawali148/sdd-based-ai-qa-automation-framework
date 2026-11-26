@@ -1,0 +1,198 @@
+{
+  "$defs": {
+    "APIBinding": {
+      "properties": {
+        "method": {
+          "title": "Method",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "operation_id": {
+          "default": "",
+          "title": "Operation Id",
+          "type": "string"
+        },
+        "auth": {
+          "default": true,
+          "title": "Auth",
+          "type": "boolean"
+        },
+        "precondition": {
+          "default": "none",
+          "enum": [
+            "none",
+            "existing_resource",
+            "duplicate"
+          ],
+          "title": "Precondition",
+          "type": "string"
+        }
+      },
+      "required": [
+        "method",
+        "path"
+      ],
+      "title": "APIBinding",
+      "type": "object"
+    },
+    "Expectation": {
+      "properties": {
+        "kind": {
+          "default": "unknown",
+          "enum": [
+            "navigate",
+            "message",
+            "status",
+            "unknown"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "value": {
+          "default": "",
+          "title": "Value",
+          "type": "string"
+        },
+        "negate": {
+          "default": false,
+          "title": "Negate",
+          "type": "boolean"
+        },
+        "status_code": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Status Code"
+        },
+        "body_contains": {
+          "default": "",
+          "title": "Body Contains",
+          "type": "string"
+        },
+        "validate_schema": {
+          "default": false,
+          "title": "Validate Schema",
+          "type": "boolean"
+        }
+      },
+      "title": "Expectation",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    },
+    "type": {
+      "default": "positive",
+      "enum": [
+        "positive",
+        "negative",
+        "boundary"
+      ],
+      "title": "Type",
+      "type": "string"
+    },
+    "given": {
+      "default": "",
+      "title": "Given",
+      "type": "string"
+    },
+    "when": {
+      "default": "",
+      "title": "When",
+      "type": "string"
+    },
+    "then": {
+      "default": "",
+      "title": "Then",
+      "type": "string"
+    },
+    "channels": {
+      "items": {
+        "enum": [
+          "ui",
+          "api"
+        ],
+        "type": "string"
+      },
+      "title": "Channels",
+      "type": "array"
+    },
+    "inputs": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Inputs",
+      "type": "object"
+    },
+    "expected_ui": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Expectation"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "expected_api": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Expectation"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "api": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/APIBinding"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "start_page": {
+      "default": "",
+      "title": "Start Page",
+      "type": "string"
+    },
+    "requirement_id": {
+      "default": "",
+      "title": "Requirement Id",
+      "type": "string"
+    },
+    "source_text": {
+      "default": "",
+      "title": "Source Text",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "title"
+  ],
+  "title": "AcceptanceCriterion",
+  "type": "object"
+}

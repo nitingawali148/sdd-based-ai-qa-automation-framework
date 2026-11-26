@@ -1,0 +1,18 @@
+"""Generated UI tests for {{ spec.id }} - {{ spec.title }}.
+
+Source of truth: specifications/features/{{ spec.feature }}/ (spec.yaml, acceptance_criteria.yaml, test_cases.yaml).
+Do not hand-edit generated regions: change the specification and regenerate. Regions of tests that are not
+impacted by a change are preserved verbatim.
+"""
+
+from __future__ import annotations
+
+import pytest
+from playwright.sync_api import Page
+
+{% for p in pages %}
+from ui.pages.{{ p.module }} import {{ p.class_name }}  # noqa: F401
+{% endfor %}
+from utils.test_data import TestData
+
+DATA = TestData.for_feature({{ spec.feature|pyrepr }})

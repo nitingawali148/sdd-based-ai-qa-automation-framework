@@ -1,0 +1,54 @@
+# SPEC-RESET-001 - validation
+spec_id: SPEC-RESET-001
+spec_version: '1.0'
+passed: false
+findings:
+- code: OPEN_QUESTION
+  severity: error
+  message: 'Open question must be resolved before approval: TBD: how long is the reset link valid?'
+  artifact_id: SPEC-RESET-001
+  source: rule
+- code: AC_VAGUE
+  severity: error
+  message: AC-001 uses the vague term 'quickly'. State the exact expected outcome.
+  artifact_id: AC-001
+  source: rule
+- code: AC_UI_EXPECTATION_UNMEASURABLE
+  severity: error
+  message: 'AC-001: expected UI result is not measurable (''they receive an email quickly''). Quote the exact message
+    or name the target page.'
+  artifact_id: AC-001
+  source: rule
+- code: AC_VAGUE
+  severity: error
+  message: AC-002 uses the vague term 'appropriate'. State the exact expected outcome.
+  artifact_id: AC-002
+  source: rule
+- code: AC_UI_EXPECTATION_UNMEASURABLE
+  severity: error
+  message: 'AC-002: expected UI result is not measurable (''an appropriate message is shown''). Quote the exact
+    message or name the target page.'
+  artifact_id: AC-002
+  source: rule
+- code: MISSING_FORMAT_SCENARIO
+  severity: info
+  message: No acceptance criterion covers a malformed 'email'
+  artifact_id: email
+  source: rule
+- code: BR_VAGUE
+  severity: warning
+  message: 'BR-001 uses the vague term ''appropriate'': ''The reset link should expire after an appropriate time.'''
+  artifact_id: BR-001
+  source: rule
+- code: BR_VAGUE
+  severity: warning
+  message: 'BR-002 uses the vague term ''secure'': ''The new password must be secure.'''
+  artifact_id: BR-002
+  source: rule
+- code: AGENT_SUMMARY
+  severity: info
+  message: 'SPEC-RESET-001 v1.0: 2 acceptance criteria reviewed, 5 blocking issue(s), 2 warning(s). Return to the
+    author for clarification.'
+  artifact_id: ''
+  source: ai
+checked_at: '2026-11-26T14:50:35+00:00'

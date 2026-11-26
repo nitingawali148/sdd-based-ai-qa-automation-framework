@@ -1,0 +1,17 @@
+# SPEC-USERS-001 - coverage
+spec_id: SPEC-USERS-001
+spec_version: '1.0'
+passed: true
+ac_total: 9
+ac_covered: 9
+uncovered_acs: []
+scenarios_by_type:
+  positive: 6
+  negative: 3
+findings:
+- code: BOUNDARY_NOT_SPECIFIED
+  severity: info
+  message: '''name'' has length rules but no boundary AC; no boundary scenario was generated (agents must not invent
+    acceptance criteria).'
+  artifact_id: name
+  source: rule

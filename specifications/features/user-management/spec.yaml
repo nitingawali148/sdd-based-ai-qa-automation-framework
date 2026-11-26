@@ -1,0 +1,101 @@
+# SPEC-USERS-001 v1.0 - feature specification (source of truth)
+id: SPEC-USERS-001
+version: '1.0'
+title: User Management API
+feature: user-management
+feature_code: USERS
+requirement_ids:
+- REQ-002
+status: APPROVED
+priority: P1
+objective: Provide a secure REST API for managing application users.
+user_story: As an administrator, I want to create, view, update and delete users through the API so that I can manage
+  access to the application.
+functional_requirements:
+- id: FR-001
+  text: The user must provide name (string, required, 1-100 characters).
+- id: FR-002
+  text: The user must provide email (email, required, unique).
+- id: FR-003
+  text: The user must provide role (enum, required, admin, viewer).
+- id: FR-004
+  text: 'The system must provide POST /api/users: Create a user.'
+- id: FR-005
+  text: 'The system must provide GET /api/users: List users.'
+- id: FR-006
+  text: 'The system must provide GET /api/users/{user_id}: Get a user.'
+- id: FR-007
+  text: 'The system must provide PUT /api/users/{user_id}: Replace a user.'
+- id: FR-008
+  text: 'The system must provide PATCH /api/users/{user_id}: Partially update a user.'
+- id: FR-009
+  text: 'The system must provide DELETE /api/users/{user_id}: Delete a user.'
+business_rules:
+- id: BR-001
+  text: Only authenticated clients can use the user management API.
+- id: BR-002
+  text: A user email must be unique.
+- id: BR-003
+  text: A user name is required and must be at most 100 characters.
+- id: BR-004
+  text: 'A user role must be one of: admin, viewer.'
+inputs:
+- name: name
+  type: string
+  required: true
+  min_length: 1
+  max_length: 100
+  pattern: null
+  enum: []
+  label: null
+  description: 1-100 characters
+- name: email
+  type: email
+  required: true
+  min_length: null
+  max_length: null
+  pattern: null
+  enum: []
+  label: null
+  description: unique
+- name: role
+  type: enum
+  required: true
+  min_length: null
+  max_length: null
+  pattern: null
+  enum:
+  - admin
+  - viewer
+  label: null
+  description: admin, viewer
+ui_pages: []
+api_endpoints:
+- method: POST
+  path: /api/users
+  summary: Create a user
+- method: GET
+  path: /api/users
+  summary: List users
+- method: GET
+  path: /api/users/{user_id}
+  summary: Get a user
+- method: PUT
+  path: /api/users/{user_id}
+  summary: Replace a user
+- method: PATCH
+  path: /api/users/{user_id}
+  summary: Partially update a user
+- method: DELETE
+  path: /api/users/{user_id}
+  summary: Delete a user
+non_functional:
+- id: NFR-001
+  text: User management API responses must complete within 1 second at the 95th percentile.
+dependencies:
+- 'REQ-001: an access token is obtained through the login API.'
+open_questions: []
+generated_by: offline-rule-engine
+created_at: '2026-11-26T14:50:23+00:00'
+updated_at: '2026-11-26T15:07:57+00:00'
+source_requirement_hash: 0820c81141cf095a

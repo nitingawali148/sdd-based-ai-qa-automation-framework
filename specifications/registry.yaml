@@ -1,0 +1,34 @@
+# Specification registry - maintained by the framework
+specs:
+  SPEC-LOGIN-001:
+    feature: user-login
+    requirement_ids:
+    - REQ-001
+    title: User Login
+    version: '1.0'
+    status: APPROVED
+    updated_at: '2026-11-26T15:07:09+00:00'
+    approved_version: '1.0'
+    approved_versions:
+    - '1.0'
+    superseded_versions: []
+  SPEC-USERS-001:
+    feature: user-management
+    requirement_ids:
+    - REQ-002
+    title: User Management API
+    version: '1.0'
+    status: APPROVED
+    updated_at: '2026-11-26T15:07:57+00:00'
+    approved_version: '1.0'
+    approved_versions:
+    - '1.0'
+    superseded_versions: []
+  SPEC-RESET-001:
+    feature: password-reset
+    requirement_ids:
+    - REQ-003
+    title: Password Reset
+    version: '1.0'
+    status: NEEDS_CLARIFICATION
+    updated_at: '2026-11-26T14:50:35+00:00'

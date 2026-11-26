@@ -1,0 +1,22 @@
+# Human approvals for SPEC-USERS-001 v1.0 (append-only)
+- stage: spec
+  spec_id: SPEC-USERS-001
+  spec_version: '1.0'
+  approved_by: Nitin Gawali
+  approved_at: '2026-11-26T15:07:57+00:00'
+  artifact_hash: fd38955344d67fc7
+  comment: authorized by the user in Claude Code session
+- stage: test_cases
+  spec_id: SPEC-USERS-001
+  spec_version: '1.0'
+  approved_by: Nitin Gawali
+  approved_at: '2026-11-26T15:08:16+00:00'
+  artifact_hash: 1cf186cc40ea767c
+  comment: authorized by the user in Claude Code session
+- stage: scripts
+  spec_id: SPEC-USERS-001
+  spec_version: '1.0'
+  approved_by: Nitin Gawali
+  approved_at: '2026-11-26T15:08:36+00:00'
+  artifact_hash: b3bb000543490e3c
+  comment: authorized by the user in Claude Code session

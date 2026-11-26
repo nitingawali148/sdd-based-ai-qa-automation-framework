@@ -1,0 +1,354 @@
+{
+  "$defs": {
+    "APIEndpointRef": {
+      "properties": {
+        "method": {
+          "title": "Method",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "summary": {
+          "default": "",
+          "title": "Summary",
+          "type": "string"
+        }
+      },
+      "required": [
+        "method",
+        "path"
+      ],
+      "title": "APIEndpointRef",
+      "type": "object"
+    },
+    "Finding": {
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "error",
+            "warning",
+            "info"
+          ],
+          "title": "Severity",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "artifact_id": {
+          "default": "",
+          "title": "Artifact Id",
+          "type": "string"
+        },
+        "source": {
+          "default": "rule",
+          "enum": [
+            "rule",
+            "ai"
+          ],
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "severity",
+        "message"
+      ],
+      "title": "Finding",
+      "type": "object"
+    },
+    "InputField": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "type": {
+          "default": "string",
+          "title": "Type",
+          "type": "string"
+        },
+        "required": {
+          "default": true,
+          "title": "Required",
+          "type": "boolean"
+        },
+        "min_length": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Min Length"
+        },
+        "max_length": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Length"
+        },
+        "pattern": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pattern"
+        },
+        "enum": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Enum",
+          "type": "array"
+        },
+        "label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Label"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "InputField",
+      "type": "object"
+    },
+    "RawAcceptanceCriterion": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "channels": {
+          "items": {
+            "enum": [
+              "ui",
+              "api"
+            ],
+            "type": "string"
+          },
+          "title": "Channels",
+          "type": "array"
+        },
+        "api_text": {
+          "default": "",
+          "title": "Api Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "text"
+      ],
+      "title": "RawAcceptanceCriterion",
+      "type": "object"
+    },
+    "UIElement": {
+      "properties": {
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "role": {
+          "default": "text",
+          "title": "Role",
+          "type": "string"
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "title": "UIElement",
+      "type": "object"
+    },
+    "UIPage": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "elements": {
+          "items": {
+            "$ref": "#/$defs/UIElement"
+          },
+          "title": "Elements",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "path"
+      ],
+      "title": "UIPage",
+      "type": "object"
+    }
+  },
+  "description": "Output of the Requirement Analysis Agent.",
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    },
+    "feature": {
+      "title": "Feature",
+      "type": "string"
+    },
+    "feature_code": {
+      "title": "Feature Code",
+      "type": "string"
+    },
+    "priority": {
+      "default": "P2",
+      "enum": [
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "title": "Priority",
+      "type": "string"
+    },
+    "user_story": {
+      "default": "",
+      "title": "User Story",
+      "type": "string"
+    },
+    "objective": {
+      "default": "",
+      "title": "Objective",
+      "type": "string"
+    },
+    "business_rules": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Business Rules",
+      "type": "array"
+    },
+    "input_fields": {
+      "items": {
+        "$ref": "#/$defs/InputField"
+      },
+      "title": "Input Fields",
+      "type": "array"
+    },
+    "acceptance_criteria": {
+      "items": {
+        "$ref": "#/$defs/RawAcceptanceCriterion"
+      },
+      "title": "Acceptance Criteria",
+      "type": "array"
+    },
+    "ui_pages": {
+      "items": {
+        "$ref": "#/$defs/UIPage"
+      },
+      "title": "Ui Pages",
+      "type": "array"
+    },
+    "api_endpoints": {
+      "items": {
+        "$ref": "#/$defs/APIEndpointRef"
+      },
+      "title": "Api Endpoints",
+      "type": "array"
+    },
+    "non_functional": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Non Functional",
+      "type": "array"
+    },
+    "dependencies": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Dependencies",
+      "type": "array"
+    },
+    "open_questions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Open Questions",
+      "type": "array"
+    },
+    "ambiguities": {
+      "items": {
+        "$ref": "#/$defs/Finding"
+      },
+      "title": "Ambiguities",
+      "type": "array"
+    },
+    "source_file": {
+      "default": "",
+      "title": "Source File",
+      "type": "string"
+    },
+    "source_hash": {
+      "default": "",
+      "title": "Source Hash",
+      "type": "string"
+    },
+    "analysed_by": {
+      "default": "",
+      "title": "Analysed By",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "title",
+    "feature",
+    "feature_code"
+  ],
+  "title": "StructuredRequirement",
+  "type": "object"
+}

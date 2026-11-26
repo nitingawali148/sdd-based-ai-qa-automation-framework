@@ -1,0 +1,193 @@
+openapi: 3.0.3
+info:
+  title: SDD Demo Portal API
+  version: 1.0.0
+  description: API of the local demo application used by the SDD framework POC (not a production system).
+servers:
+  - url: http://127.0.0.1:8765
+security:
+  - bearerAuth: []
+paths:
+  /api/auth/login:
+    post:
+      operationId: login
+      summary: Authenticate a user and issue an access token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/LoginRequest'}
+      responses:
+        '200':
+          description: Authenticated
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/TokenResponse'}
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Error'}
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Error'}
+  /api/users:
+    get:
+      operationId: listUsers
+      summary: List users
+      responses:
+        '200':
+          description: Users
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {$ref: '#/components/schemas/User'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+    post:
+      operationId: createUser
+      summary: Create a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/UserCreate'}
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/User'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '409':
+          description: Email already exists
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Error'}
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Error'}
+  /api/users/{user_id}:
+    parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema: {type: integer}
+    get:
+      operationId: getUser
+      summary: Get a user
+      responses:
+        '200':
+          description: User
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/User'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '404': {$ref: '#/components/responses/NotFound'}
+    put:
+      operationId: replaceUser
+      summary: Replace a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/UserCreate'}
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/User'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '404': {$ref: '#/components/responses/NotFound'}
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Error'}
+    patch:
+      operationId: updateUser
+      summary: Partially update a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/UserPatch'}
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/User'}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '404': {$ref: '#/components/responses/NotFound'}
+    delete:
+      operationId: deleteUser
+      summary: Delete a user
+      x-destructive: true
+      responses:
+        '204': {description: Deleted}
+        '401': {$ref: '#/components/responses/Unauthorized'}
+        '404': {$ref: '#/components/responses/NotFound'}
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  responses:
+    Unauthorized:
+      description: Missing or invalid token
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Error'}
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema: {$ref: '#/components/schemas/Error'}
+  schemas:
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: {type: string}
+        password: {type: string}
+    TokenResponse:
+      type: object
+      required: [access_token, token_type]
+      properties:
+        access_token: {type: string}
+        token_type: {type: string, enum: [bearer]}
+    Error:
+      type: object
+      required: [detail]
+      properties:
+        detail: {type: string}
+    UserCreate:
+      type: object
+      required: [name, email, role]
+      properties:
+        name: {type: string, minLength: 1, maxLength: 100}
+        email: {type: string, format: email}
+        role: {type: string, enum: [admin, viewer]}
+    UserPatch:
+      type: object
+      properties:
+        name: {type: string, minLength: 1, maxLength: 100}
+        email: {type: string, format: email}
+        role: {type: string, enum: [admin, viewer]}
+    User:
+      type: object
+      required: [id, name, email, role, created_at]
+      additionalProperties: false
+      properties:
+        id: {type: integer}
+        name: {type: string}
+        email: {type: string}
+        role: {type: string, enum: [admin, viewer]}
+        created_at: {type: string}

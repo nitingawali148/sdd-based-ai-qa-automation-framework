@@ -1,0 +1,32 @@
+# SPEC-USERS-001 - validation
+spec_id: SPEC-USERS-001
+spec_version: '1.0'
+passed: true
+findings:
+- code: MISSING_NEGATIVE_SCENARIO
+  severity: warning
+  message: No acceptance criterion covers an invalid/empty value for required field 'name'
+  artifact_id: name
+  source: rule
+- code: MISSING_BOUNDARY_SCENARIO
+  severity: warning
+  message: Field 'name' has length rules (1-100 characters) but no boundary acceptance criterion
+  artifact_id: name
+  source: rule
+- code: MISSING_FORMAT_SCENARIO
+  severity: info
+  message: No acceptance criterion covers a malformed 'email'
+  artifact_id: email
+  source: rule
+- code: MISSING_NEGATIVE_SCENARIO
+  severity: warning
+  message: No acceptance criterion covers an invalid/empty value for required field 'role'
+  artifact_id: role
+  source: rule
+- code: AGENT_SUMMARY
+  severity: info
+  message: 'SPEC-USERS-001 v1.0: 9 acceptance criteria reviewed, 0 blocking issue(s), 3 warning(s). Ready for human
+    approval.'
+  artifact_id: ''
+  source: ai
+checked_at: '2026-11-26T14:50:24+00:00'

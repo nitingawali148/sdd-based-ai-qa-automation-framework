@@ -1,0 +1,10 @@
+# SPEC-LOGIN-001 - code validation
+spec_id: SPEC-LOGIN-001
+passed: true
+files:
+- ui/pages/login_page.py
+- ui/pages/dashboard_page.py
+- ui/tests/test_user_login.py
+- api/tests/test_user_login_api.py
+findings: []
+bundle_hash: 433e3c74dbb92f84

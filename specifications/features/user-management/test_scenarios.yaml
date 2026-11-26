@@ -1,0 +1,238 @@
+# SPEC-USERS-001 - scenarios
+spec_id: SPEC-USERS-001
+spec_version: '1.0'
+scenarios:
+- id: TS-USERS-001
+  key: AC-001:api:base
+  title: Create a user with a valid name, email and role -> the API returns 201 and the created user [API]
+  type: positive
+  channel: api
+  ac_ids:
+  - AC-001
+  inputs:
+    name: valid
+    email: valid
+    role: valid
+  expected:
+    kind: status
+    value: '201'
+    negate: false
+    status_code: 201
+    body_contains: ''
+    validate_schema: true
+  priority: P1
+  tags:
+  - functional
+  - regression
+  - smoke
+  spec_id: SPEC-USERS-001
+  spec_version: '1.0'
+  ac_hash: 2b87107a58887693
+  status: active
+- id: TS-USERS-002
+  key: AC-002:api:base
+  title: Create a user with the same email -> "Email already exists" shown [API]
+  type: negative
+  channel: api
+  ac_ids:
+  - AC-002
+  inputs:
+    name: valid
+    email: duplicate
+    role: valid
+  expected:
+    kind: status
+    value: '409'
+    negate: false
+    status_code: 409
+    body_contains: Email already exists
+    validate_schema: false
+  priority: P2
+  tags:
+  - functional
+  - regression
+  spec_id: SPEC-USERS-001
+  spec_version: '1.0'
+  ac_hash: d8a57b1d988ede4d
+  status: active
+- id: TS-USERS-003
+  key: AC-003:api:base
+  title: Create a user with an empty email -> the API returns 422 [API]
+  type: negative
+  channel: api
+  ac_ids:
+  - AC-003
+  inputs:
+    name: valid
+    email: empty
+    role: valid
+  expected:
+    kind: status
+    value: '422'
+    negate: false
+    status_code: 422
+    body_contains: ''
+    validate_schema: false
+  priority: P2
+  tags:
+  - functional
+  - regression
+  spec_id: SPEC-USERS-001
+  spec_version: '1.0'
+  ac_hash: 82a30f3568447392
+  status: active
+- id: TS-USERS-004
+  key: AC-004:api:base
+  title: Retrieve the user by id -> the API returns 200 and the user [API]
+  type: positive
+  channel: api
+  ac_ids:
+  - AC-004
+  inputs: {}
+  expected:
+    kind: status
+    value: '200'
+    negate: false
+    status_code: 200
+    body_contains: ''
+    validate_schema: true
+  priority: P1
+  tags:
+  - functional
+  - regression
+  - smoke
+  spec_id: SPEC-USERS-001
+  spec_version: '1.0'
+  ac_hash: efd019eae9c4f559
+  status: active
+- id: TS-USERS-005
+  key: AC-005:api:base
+  title: List users -> the API returns 200 and the list of users [API]
+  type: positive
+  channel: api
+  ac_ids:
+  - AC-005
+  inputs: {}
+  expected:
+    kind: status
+    value: '200'
+    negate: false
+    status_code: 200
+    body_contains: ''
+    validate_schema: true
+  priority: P1
+  tags:
+  - functional
+  - regression
+  - smoke
+  spec_id: SPEC-USERS-001
+  spec_version: '1.0'
+  ac_hash: 42e52956c8f211a5
+  status: active
+- id: TS-USERS-006
+  key: AC-006:api:base
+  title: Update the user with a valid name, email and role -> the API returns 200 and the updated user [API]
+  type: positive
+  channel: api
+  ac_ids:
+  - AC-006
+  inputs:
+    name: valid
+    email: valid
+    role: valid
+  expected:
+    kind: status
+    value: '200'
+    negate: false
+    status_code: 200
+    body_contains: ''
+    validate_schema: true
+  priority: P1
+  tags:
+  - functional
+  - regression
+  - smoke
+  spec_id: SPEC-USERS-001
+  spec_version: '1.0'
+  ac_hash: e5653eef2f84d321
+  status: active
+- id: TS-USERS-007
+  key: AC-007:api:base
+  title: Partially update the user role -> the API returns 200 and the updated user [API]
+  type: positive
+  channel: api
+  ac_ids:
+  - AC-007
+  inputs:
+    role: valid
+  expected:
+    kind: status
+    value: '200'
+    negate: false
+    status_code: 200
+    body_contains: ''
+    validate_schema: true
+  priority: P1
+  tags:
+  - functional
+  - regression
+  - smoke
+  spec_id: SPEC-USERS-001
+  spec_version: '1.0'
+  ac_hash: 86e4f98b20ddea13
+  status: active
+- id: TS-USERS-008
+  key: AC-008:api:base
+  title: Delete the user -> the API returns 204 [API]
+  type: positive
+  channel: api
+  ac_ids:
+  - AC-008
+  inputs: {}
+  expected:
+    kind: status
+    value: '204'
+    negate: false
+    status_code: 204
+    body_contains: ''
+    validate_schema: false
+  priority: P1
+  tags:
+  - functional
+  - regression
+  - smoke
+  spec_id: SPEC-USERS-001
+  spec_version: '1.0'
+  ac_hash: 336030c3eb77fbad
+  status: active
+- id: TS-USERS-009
+  key: AC-009:api:base
+  title: List users -> the API returns 401 [API]
+  type: negative
+  channel: api
+  ac_ids:
+  - AC-009
+  inputs: {}
+  expected:
+    kind: status
+    value: '401'
+    negate: false
+    status_code: 401
+    body_contains: ''
+    validate_schema: false
+  priority: P2
+  tags:
+  - functional
+  - regression
+  spec_id: SPEC-USERS-001
+  spec_version: '1.0'
+  ac_hash: 437d82bb445f2000
+  status: active
+coverage_notes:
+- code: BOUNDARY_NOT_SPECIFIED
+  severity: info
+  message: '''name'' has length rules but no boundary AC; no boundary scenario was generated (agents must not invent
+    acceptance criteria).'
+  artifact_id: name
+  source: rule
+generated_by: offline-rule-engine

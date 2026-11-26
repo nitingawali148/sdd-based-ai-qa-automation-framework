@@ -1,0 +1,523 @@
+{
+  "$defs": {
+    "APIBinding": {
+      "properties": {
+        "method": {
+          "title": "Method",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "operation_id": {
+          "default": "",
+          "title": "Operation Id",
+          "type": "string"
+        },
+        "auth": {
+          "default": true,
+          "title": "Auth",
+          "type": "boolean"
+        },
+        "precondition": {
+          "default": "none",
+          "enum": [
+            "none",
+            "existing_resource",
+            "duplicate"
+          ],
+          "title": "Precondition",
+          "type": "string"
+        }
+      },
+      "required": [
+        "method",
+        "path"
+      ],
+      "title": "APIBinding",
+      "type": "object"
+    },
+    "APIEndpointRef": {
+      "properties": {
+        "method": {
+          "title": "Method",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "summary": {
+          "default": "",
+          "title": "Summary",
+          "type": "string"
+        }
+      },
+      "required": [
+        "method",
+        "path"
+      ],
+      "title": "APIEndpointRef",
+      "type": "object"
+    },
+    "AcceptanceCriterion": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "type": {
+          "default": "positive",
+          "enum": [
+            "positive",
+            "negative",
+            "boundary"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "given": {
+          "default": "",
+          "title": "Given",
+          "type": "string"
+        },
+        "when": {
+          "default": "",
+          "title": "When",
+          "type": "string"
+        },
+        "then": {
+          "default": "",
+          "title": "Then",
+          "type": "string"
+        },
+        "channels": {
+          "items": {
+            "enum": [
+              "ui",
+              "api"
+            ],
+            "type": "string"
+          },
+          "title": "Channels",
+          "type": "array"
+        },
+        "inputs": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Inputs",
+          "type": "object"
+        },
+        "expected_ui": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Expectation"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "expected_api": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Expectation"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "api": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/APIBinding"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "start_page": {
+          "default": "",
+          "title": "Start Page",
+          "type": "string"
+        },
+        "requirement_id": {
+          "default": "",
+          "title": "Requirement Id",
+          "type": "string"
+        },
+        "source_text": {
+          "default": "",
+          "title": "Source Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title"
+      ],
+      "title": "AcceptanceCriterion",
+      "type": "object"
+    },
+    "Expectation": {
+      "properties": {
+        "kind": {
+          "default": "unknown",
+          "enum": [
+            "navigate",
+            "message",
+            "status",
+            "unknown"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "value": {
+          "default": "",
+          "title": "Value",
+          "type": "string"
+        },
+        "negate": {
+          "default": false,
+          "title": "Negate",
+          "type": "boolean"
+        },
+        "status_code": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Status Code"
+        },
+        "body_contains": {
+          "default": "",
+          "title": "Body Contains",
+          "type": "string"
+        },
+        "validate_schema": {
+          "default": false,
+          "title": "Validate Schema",
+          "type": "boolean"
+        }
+      },
+      "title": "Expectation",
+      "type": "object"
+    },
+    "InputField": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "type": {
+          "default": "string",
+          "title": "Type",
+          "type": "string"
+        },
+        "required": {
+          "default": true,
+          "title": "Required",
+          "type": "boolean"
+        },
+        "min_length": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Min Length"
+        },
+        "max_length": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Length"
+        },
+        "pattern": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pattern"
+        },
+        "enum": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Enum",
+          "type": "array"
+        },
+        "label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Label"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "InputField",
+      "type": "object"
+    },
+    "SpecStatus": {
+      "enum": [
+        "DRAFT",
+        "NEEDS_CLARIFICATION",
+        "VALIDATED",
+        "APPROVED",
+        "SUPERSEDED"
+      ],
+      "title": "SpecStatus",
+      "type": "string"
+    },
+    "TextItem": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "text"
+      ],
+      "title": "TextItem",
+      "type": "object"
+    },
+    "UIElement": {
+      "properties": {
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "role": {
+          "default": "text",
+          "title": "Role",
+          "type": "string"
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "title": "UIElement",
+      "type": "object"
+    },
+    "UIPage": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "elements": {
+          "items": {
+            "$ref": "#/$defs/UIElement"
+          },
+          "title": "Elements",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "path"
+      ],
+      "title": "UIPage",
+      "type": "object"
+    }
+  },
+  "description": "Output of the Specification Architect Agent. The single source of truth for a feature.",
+  "properties": {
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "version": {
+      "default": "1.0",
+      "title": "Version",
+      "type": "string"
+    },
+    "title": {
+      "title": "Title",
+      "type": "string"
+    },
+    "feature": {
+      "title": "Feature",
+      "type": "string"
+    },
+    "feature_code": {
+      "title": "Feature Code",
+      "type": "string"
+    },
+    "requirement_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Requirement Ids",
+      "type": "array"
+    },
+    "status": {
+      "$ref": "#/$defs/SpecStatus",
+      "default": "DRAFT"
+    },
+    "priority": {
+      "default": "P2",
+      "enum": [
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "title": "Priority",
+      "type": "string"
+    },
+    "objective": {
+      "default": "",
+      "title": "Objective",
+      "type": "string"
+    },
+    "user_story": {
+      "default": "",
+      "title": "User Story",
+      "type": "string"
+    },
+    "functional_requirements": {
+      "items": {
+        "$ref": "#/$defs/TextItem"
+      },
+      "title": "Functional Requirements",
+      "type": "array"
+    },
+    "business_rules": {
+      "items": {
+        "$ref": "#/$defs/TextItem"
+      },
+      "title": "Business Rules",
+      "type": "array"
+    },
+    "inputs": {
+      "items": {
+        "$ref": "#/$defs/InputField"
+      },
+      "title": "Inputs",
+      "type": "array"
+    },
+    "acceptance_criteria": {
+      "items": {
+        "$ref": "#/$defs/AcceptanceCriterion"
+      },
+      "title": "Acceptance Criteria",
+      "type": "array"
+    },
+    "ui_pages": {
+      "items": {
+        "$ref": "#/$defs/UIPage"
+      },
+      "title": "Ui Pages",
+      "type": "array"
+    },
+    "api_endpoints": {
+      "items": {
+        "$ref": "#/$defs/APIEndpointRef"
+      },
+      "title": "Api Endpoints",
+      "type": "array"
+    },
+    "non_functional": {
+      "items": {
+        "$ref": "#/$defs/TextItem"
+      },
+      "title": "Non Functional",
+      "type": "array"
+    },
+    "dependencies": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Dependencies",
+      "type": "array"
+    },
+    "open_questions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Open Questions",
+      "type": "array"
+    },
+    "generated_by": {
+      "default": "",
+      "title": "Generated By",
+      "type": "string"
+    },
+    "created_at": {
+      "title": "Created At",
+      "type": "string"
+    },
+    "updated_at": {
+      "title": "Updated At",
+      "type": "string"
+    },
+    "source_requirement_hash": {
+      "default": "",
+      "title": "Source Requirement Hash",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "title",
+    "feature",
+    "feature_code",
+    "requirement_ids"
+  ],
+  "title": "FeatureSpec",
+  "type": "object"
+}

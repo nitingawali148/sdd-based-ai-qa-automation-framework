@@ -1,0 +1,47 @@
+"""Page object for the {{ page.page }} page ({{ page.path }}).
+
+Generated from {{ spec.id }} (automation_spec.yaml). Locators use accessible labels and roles taken from
+the specification's UI section. Regenerated only when the page definition in the specification changes.
+"""
+
+from __future__ import annotations
+
+from playwright.sync_api import Page
+
+from ui.base.base_page import BasePage
+
+
+class {{ page.class_name }}(BasePage):
+    NAME = {{ page.page|pyrepr }}
+    PATH = {{ page.path|pyrepr }}
+
+    def __init__(self, page: Page, base_url: str) -> None:
+        super().__init__(page, base_url)
+{% for loc in page.locators %}
+{% if loc.strategy == "label" %}
+        self.{{ loc.key }} = page.get_by_label({{ loc.value|pyrepr }}, exact=True)
+{% elif loc.strategy == "role" %}
+        self.{{ loc.key }} = page.get_by_role({{ loc.role|pyrepr }}, name={{ loc.value|pyrepr }}, exact=True)
+{% elif loc.strategy == "test_id" %}
+        self.{{ loc.key }} = page.get_by_test_id({{ loc.value|pyrepr }})
+{% elif loc.strategy == "css" %}
+        self.{{ loc.key }} = page.locator({{ loc.value|pyrepr }})
+{% else %}
+        self.{{ loc.key }} = page.get_by_text({{ loc.value|pyrepr }}, exact=True)
+{% endif %}
+{% endfor %}
+{% if page.form_fields %}
+
+    def fill_form(self{% for f in page.form_fields %}, {{ f }}: str | None = None{% endfor %}) -> {{ page.class_name|pyrepr }}:
+        """Fill the form. `None` leaves a field untouched (used for 'missing' test data)."""
+{% for f, key in page.form_fields.items() %}
+        self.fill(self.{{ key }}, {{ f }})
+{% endfor %}
+        return self
+{% endif %}
+{% if page.submit_key %}
+
+    def submit(self) -> {{ page.class_name|pyrepr }}:
+        self.{{ page.submit_key }}.click()
+        return self
+{% endif %}

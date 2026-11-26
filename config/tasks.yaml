@@ -1,0 +1,170 @@
+# CrewAI task definitions. `{payload}` is the JSON input prepared by the Flow.
+# The [[sdd-task:...]] marker and the <<<INPUT ... INPUT>>> block let the offline rule engine route the task;
+# a real LLM reads them as ordinary instructions. Output contracts are enforced with output_pydantic.
+
+requirement_analysis:
+  agent: requirement_analyst
+  output: StructuredRequirement
+  description: |
+    [[sdd-task:requirement_analysis]]
+    Analyse the business requirement document below (metadata, sections and raw text).
+    Extract the requirement ID, title, feature slug and code, user story, objective, business rules, input
+    fields (name, type, required, min/max length, enum values, UI label), acceptance criteria (keep each
+    AC-nnn ID, its exact text, its channels UI/API and any API-specific outcome), UI pages with elements and
+    roles, API endpoints, non-functional requirements, dependencies and open questions.
+    Record every vague term (for example "quickly", "appropriate") and every non-measurable NFR as an
+    ambiguity. Do not invent anything that is not stated.
+    <<<INPUT
+    {payload}
+    INPUT>>>
+  expected_output: A StructuredRequirement JSON object.
+
+specification_design:
+  agent: specification_architect
+  output: FeatureSpec
+  context: [requirement_analysis]
+  description: |
+    [[sdd-task:specification_design]]
+    Using the structured requirement from the previous task, write the feature specification with the
+    spec ID and version given below. For each requirement acceptance criterion create exactly one
+    specification AC with the same ID: split it into given/when/then, set the input data class per field
+    (valid, empty, invalid, unregistered, duplicate, too_short, too_long), set a measurable expected result
+    per channel (UI: quoted message or target page; API: status code, body text, schema check) and bind API
+    criteria to an endpoint of the OpenAPI contract. Keep the source text. If the outcome is not measurable,
+    set the expectation kind to "unknown". Never add acceptance criteria.
+    Copy inputs, ui_pages and api_endpoints from the structured requirement unchanged. start_page and a
+    navigate expectation's value must be a page NAME from ui_pages (for example Login, Dashboard), never a
+    path. Use type "boundary" for criteria about length limits (shorter than / longer than).
+    <<<INPUT
+    {payload}
+    INPUT>>>
+  expected_output: A FeatureSpec JSON object.
+
+specification_validation:
+  agent: specification_validator
+  output: SpecReview
+  description: |
+    [[sdd-task:specification_validation]]
+    Review the feature specification against its requirement. Report incomplete or conflicting acceptance
+    criteria, ambiguous conditions, missing positive/negative/boundary scenarios and traceability gaps.
+    Use severity error only for issues that must block approval.
+    <<<INPUT
+    {payload}
+    INPUT>>>
+  expected_output: A SpecReview JSON object with findings and a one-paragraph summary.
+
+test_scenarios:
+  agent: test_designer
+  output: TestScenarioSet
+  description: |
+    [[sdd-task:test_scenarios]]
+    Generate test scenarios for the approved specification below (only for the acceptance criteria listed in
+    only_ac_ids when it is not empty). One base scenario per AC and channel; for an AC with a length rule add
+    the on-the-limit companion scenario. Use key "<AC-ID>:<channel>:<variant>" and leave id empty. Map every
+    scenario to its AC and copy the AC content hash. Note fields whose boundaries are not specified.
+    <<<INPUT
+    {payload}
+    INPUT>>>
+  expected_output: A TestScenarioSet JSON object.
+
+test_cases:
+  agent: test_case_engineer
+  output: TestCaseSet
+  context: [test_scenarios]
+  description: |
+    [[sdd-task:test_cases]]
+    Write one detailed test case per scenario from the previous task: preconditions, numbered steps,
+    data classes per field, measurable expected result, priority and tags. Keep the scenario key; leave id
+    and automation_id empty (the framework assigns stable IDs).
+    <<<INPUT
+    {payload}
+    INPUT>>>
+  expected_output: A TestCaseSet JSON object.
+
+test_data:
+  agent: test_data_engineer
+  output: TestDataSet
+  description: |
+    [[sdd-task:test_data]]
+    Define the test data for every input field of the specification: a value expression per data class
+    (valid, empty, missing, invalid, malformed, unregistered, duplicate, too_short, at_min, too_long, at_max).
+    Use ${env:VAR} for credentials, ${faker:...} for generated values and ${repeat:x:N} for boundaries.
+    Never write a real credential.
+    <<<INPUT
+    {payload}
+    INPUT>>>
+  expected_output: A TestDataSet JSON object.
+
+ui_automation_design:
+  agent: ui_automation_designer
+  output: UIAutomationDesign
+  description: |
+    [[sdd-task:ui_automation_design]]
+    Design the Playwright Page Object Model for the approved UI test cases below: one page object per
+    specification page with label/role locators, the mapping of input fields to locators, the submit
+    control, and one test design (automation_id, test_case_id, function name, start page, data to fill,
+    assertion) per UI test case.
+    <<<INPUT
+    {payload}
+    INPUT>>>
+  expected_output: A UIAutomationDesign JSON object.
+
+api_automation_design:
+  agent: api_automation_designer
+  output: APIAutomationDesign
+  description: |
+    [[sdd-task:api_automation_design]]
+    Design HTTPX/pytest tests for the approved API test cases below using the OpenAPI contract: method,
+    path, auth, precondition, payload data classes, expected status, expected body text, schema validation
+    and whether the operation is destructive.
+    <<<INPUT
+    {payload}
+    INPUT>>>
+  expected_output: An APIAutomationDesign JSON object.
+
+execution_planning:
+  agent: test_executor
+  output: ExecutionPlan
+  description: |
+    [[sdd-task:execution_planning]]
+    Decide what to execute for this request (suites and/or explicit test case IDs) and explain why.
+    <<<INPUT
+    {payload}
+    INPUT>>>
+  expected_output: An ExecutionPlan JSON object.
+
+failure_analysis:
+  agent: failure_analyst
+  output: FailureAnalysisReport
+  description: |
+    [[sdd-task:failure_analysis]]
+    Analyse every failed or errored result of the execution below. Use the expected-vs-actual evidence,
+    traceback and the recent specification changes. Classify, give the probable root cause and recommend
+    an action. Do not change any result.
+    <<<INPUT
+    {payload}
+    INPUT>>>
+  expected_output: A FailureAnalysisReport JSON object.
+
+change_impact_analysis:
+  agent: change_impact_analyst
+  output: ReportNarrative
+  description: |
+    [[sdd-task:change_impact_analysis]]
+    Explain the specification change record below: what changed, which artifacts are impacted, which are
+    preserved, and the risks.
+    <<<INPUT
+    {payload}
+    INPUT>>>
+  expected_output: A ReportNarrative JSON object.
+
+qa_reporting:
+  agent: qa_reporter
+  output: ReportNarrative
+  description: |
+    [[sdd-task:qa_reporting]]
+    Write a short executive summary of the QA status from the traceability and execution data below.
+    <<<INPUT
+    {payload}
+    INPUT>>>
+  expected_output: A ReportNarrative JSON object.

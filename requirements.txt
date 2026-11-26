@@ -1,0 +1,26 @@
+# --- AI orchestration ---
+crewai>=1.15,<2
+
+# --- Automation & execution ---
+playwright>=1.48,<2
+pytest>=8,<10
+pytest-playwright>=0.5,<1
+pytest-timeout>=2.2
+httpx>=0.27,<1
+
+# --- Specifications, contracts and data ---
+pydantic>=2.7,<3
+pydantic-settings>=2.3,<3
+pyyaml>=6,<7
+jsonschema>=4.21,<5
+jinja2>=3.1
+python-dotenv>=1,<2
+faker>=25
+
+# --- Input format parsers (PDF / DOCX requirement ingestion) ---
+pypdf>=4
+python-docx>=1.1
+
+# --- Demo application under test (local only) ---
+fastapi>=0.110
+uvicorn>=0.29

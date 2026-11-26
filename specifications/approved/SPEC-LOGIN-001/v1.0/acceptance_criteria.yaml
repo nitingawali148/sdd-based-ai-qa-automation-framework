@@ -1,0 +1,184 @@
+# SPEC-LOGIN-001 v1.0 - acceptance criteria
+spec_id: SPEC-LOGIN-001
+spec_version: '1.0'
+acceptance_criteria:
+- id: AC-001
+  title: Submit a valid email and password -> they are navigated to the Dashboard page
+  type: positive
+  given: a registered user
+  when: they submit a valid email and password
+  then: they are navigated to the Dashboard page
+  channels:
+  - ui
+  - api
+  inputs:
+    email: valid
+    password: valid
+  expected_ui:
+    kind: navigate
+    value: Dashboard
+    negate: false
+    status_code: null
+    body_contains: ''
+    validate_schema: false
+  expected_api:
+    kind: status
+    value: '200'
+    negate: false
+    status_code: 200
+    body_contains: access_token
+    validate_schema: false
+  api:
+    method: POST
+    path: /api/auth/login
+    operation_id: login
+    auth: false
+    precondition: none
+  start_page: Login
+  requirement_id: REQ-001
+  source_text: Given a registered user, when they submit a valid email and password, then they are navigated to
+    the Dashboard page.
+- id: AC-002
+  title: Submit an invalid password -> "Invalid email or password" shown
+  type: negative
+  given: a registered user
+  when: they submit an invalid password
+  then: the error message "Invalid email or password" is displayed
+  channels:
+  - ui
+  - api
+  inputs:
+    email: valid
+    password: invalid
+  expected_ui:
+    kind: message
+    value: Invalid email or password
+    negate: false
+    status_code: null
+    body_contains: ''
+    validate_schema: false
+  expected_api:
+    kind: status
+    value: '401'
+    negate: false
+    status_code: 401
+    body_contains: Invalid email or password
+    validate_schema: false
+  api:
+    method: POST
+    path: /api/auth/login
+    operation_id: login
+    auth: false
+    precondition: none
+  start_page: Login
+  requirement_id: REQ-001
+  source_text: Given a registered user, when they submit an invalid password, then the error message "Invalid email
+    or password" is displayed.
+- id: AC-003
+  title: Submits an empty email -> "Email is required" shown
+  type: negative
+  given: the Login page
+  when: the user submits an empty email
+  then: the validation message "Email is required" is displayed
+  channels:
+  - ui
+  inputs:
+    email: empty
+    password: valid
+  expected_ui:
+    kind: message
+    value: Email is required
+    negate: false
+    status_code: null
+    body_contains: ''
+    validate_schema: false
+  expected_api: null
+  api: null
+  start_page: Login
+  requirement_id: REQ-001
+  source_text: Given the Login page, when the user submits an empty email, then the validation message "Email is
+    required" is displayed.
+- id: AC-004
+  title: Submits an empty password -> "Password is required" shown
+  type: negative
+  given: the Login page
+  when: the user submits an empty password
+  then: the validation message "Password is required" is displayed
+  channels:
+  - ui
+  inputs:
+    email: valid
+    password: empty
+  expected_ui:
+    kind: message
+    value: Password is required
+    negate: false
+    status_code: null
+    body_contains: ''
+    validate_schema: false
+  expected_api: null
+  api: null
+  start_page: Login
+  requirement_id: REQ-001
+  source_text: Given the Login page, when the user submits an empty password, then the validation message "Password
+    is required" is displayed.
+- id: AC-005
+  title: Submits it with a password -> "Invalid email or password" shown
+  type: negative
+  given: an unregistered email
+  when: the user submits it with a password
+  then: the error message "Invalid email or password" is displayed
+  channels:
+  - ui
+  - api
+  inputs:
+    email: unregistered
+    password: valid
+  expected_ui:
+    kind: message
+    value: Invalid email or password
+    negate: false
+    status_code: null
+    body_contains: ''
+    validate_schema: false
+  expected_api:
+    kind: status
+    value: '401'
+    negate: false
+    status_code: 401
+    body_contains: Invalid email or password
+    validate_schema: false
+  api:
+    method: POST
+    path: /api/auth/login
+    operation_id: login
+    auth: false
+    precondition: none
+  start_page: Login
+  requirement_id: REQ-001
+  source_text: Given an unregistered email, when the user submits it with a password, then the error message "Invalid
+    email or password" is displayed.
+- id: AC-006
+  title: Submits a password shorter than 8 characters -> "Password must be at least 8 characters" shown
+  type: boundary
+  given: the Login page
+  when: the user submits a password shorter than 8 characters
+  then: the validation message "Password must be at least 8 characters" is displayed
+  channels:
+  - ui
+  inputs:
+    email: valid
+    password: too_short
+  expected_ui:
+    kind: message
+    value: Password must be at least 8 characters
+    negate: false
+    status_code: null
+    body_contains: ''
+    validate_schema: false
+  expected_api: null
+  api: null
+  start_page: Login
+  requirement_id: REQ-001
+  source_text: Given the Login page, when the user submits a password shorter than 8 characters, then the validation
+    message "Password must be at least 8 characters" is displayed.

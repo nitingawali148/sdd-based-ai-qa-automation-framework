@@ -1,0 +1,22 @@
+# Human approvals for SPEC-LOGIN-001 v1.0 (append-only)
+- stage: spec
+  spec_id: SPEC-LOGIN-001
+  spec_version: '1.0'
+  approved_by: Nitin Gawali
+  approved_at: '2026-11-26T15:07:09+00:00'
+  artifact_hash: fa0d62633edd810e
+  comment: authorized by the user in Claude Code session
+- stage: test_cases
+  spec_id: SPEC-LOGIN-001
+  spec_version: '1.0'
+  approved_by: Nitin Gawali
+  approved_at: '2026-11-26T15:07:29+00:00'
+  artifact_hash: 83519118c8d7b1e6
+  comment: authorized by the user in Claude Code session
+- stage: scripts
+  spec_id: SPEC-LOGIN-001
+  spec_version: '1.0'
+  approved_by: Nitin Gawali
+  approved_at: '2026-11-26T15:07:49+00:00'
+  artifact_hash: 8b5f89a7e44b9e95
+  comment: authorized by the user in Claude Code session

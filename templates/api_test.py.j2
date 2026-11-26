@@ -1,0 +1,41 @@
+# >>> sdd:begin {{ t.automation_id }}
+@pytest.mark.spec({{ spec.id|pyrepr }}, {{ tc.spec_version|pyrepr }})
+@pytest.mark.ac({% for a in tc.ac_ids %}{{ a|pyrepr }}{% if not loop.last %}, {% endif %}{% endfor %})
+@pytest.mark.tc({{ tc.id|pyrepr }})
+@pytest.mark.automation_id({{ t.automation_id|pyrepr }})
+@pytest.mark.priority({{ tc.priority|pyrepr }})
+@pytest.mark.api
+{% for tag in tc.tags %}
+@pytest.mark.{{ tag }}
+{% endfor %}
+{% if t.destructive %}
+@pytest.mark.destructive
+{% endif %}
+{% set needs_token = t.auth or t.precondition != "none" %}
+def {{ t.function_name }}(api: ApiClient{% if needs_token %}, auth_token: str{% endif %}) -> None:
+    """{{ tc.id }}: {{ tc.title|replace('\\', '/') }}
+
+    Acceptance criteria: {{ tc.ac_ids|join(', ') }} ({{ spec.id }} v{{ tc.spec_version }}, ac_hash {{ tc.ac_hash }})
+    Expected: {{ tc.expected_result|replace('\\', '/') }}
+    """
+{% if t.payload %}
+    payload = DATA.payload({{ t.payload|pyrepr }})
+{% endif %}
+{% if t.precondition == "existing_resource" %}
+    existing = create_resource(api, {{ collection|pyrepr }}, DATA.payload({{ "{" }}{% for f in spec.inputs %}{{ f.name|pyrepr }}: "valid"{% if not loop.last %}, {% endif %}{% endfor %}{{ "}" }}), token=auth_token)
+    path = item_path({{ t.path|pyrepr }}, existing["id"])
+{% elif t.precondition == "duplicate" %}
+    create_resource(api, {{ collection|pyrepr }}, payload, token=auth_token)
+    path = {{ t.path|pyrepr }}
+{% else %}
+    path = {{ t.path|pyrepr }}
+{% endif %}
+    response = api.request({{ t.method|pyrepr }}, path{% if t.payload %}, json=payload{% endif %}, token={{ "auth_token" if t.auth else "None" }})
+    expect_status(response, {{ t.expected_status }})
+{% if t.body_contains %}
+    expect_body_contains(response, {{ t.body_contains|pyrepr }})
+{% endif %}
+{% if t.validate_schema %}
+    expect_schema(response, {{ t.method|pyrepr }}, {{ t.path|pyrepr }}, {{ t.expected_status }})
+{% endif %}
+# <<< sdd:end {{ t.automation_id }}

@@ -1,0 +1,452 @@
+# SPEC-USERS-001 - test cases
+spec_id: SPEC-USERS-001
+spec_version: '1.0'
+test_cases:
+- id: TC-USERS-001
+  key: AC-001:api:base
+  scenario_id: TS-USERS-001
+  title: Create a user with a valid name, email and role -> the API returns 201 and the created user [API]
+  channel: api
+  ac_ids:
+  - AC-001
+  spec_id: SPEC-USERS-001
+  spec_version: '1.0'
+  ac_hash: 2b87107a58887693
+  priority: P1
+  preconditions:
+  - Application is reachable at the configured base URL (API)
+  - Given an authenticated admin
+  - A valid access token is obtained for an authenticated admin
+  steps:
+  - n: 1
+    action: request
+    target: POST /api/users
+    data: 'name: <valid>, email: <valid>, role: <valid>'
+    expected: ''
+  - n: 2
+    action: verify
+    target: ''
+    data: ''
+    expected: Response status is 201, body matches the OpenAPI response schema
+  test_data:
+    name: valid
+    email: valid
+    role: valid
+  expected:
+    kind: status
+    value: '201'
+    negate: false
+    status_code: 201
+    body_contains: ''
+    validate_schema: true
+  expected_result: Response status is 201, body matches the OpenAPI response schema
+  start_page: ''
+  api:
+    method: POST
+    path: /api/users
+    operation_id: createUser
+    auth: true
+    precondition: none
+  automation_id: API-TEST-USERS-001
+  tags:
+  - functional
+  - regression
+  - smoke
+  status: active
+- id: TC-USERS-002
+  key: AC-002:api:base
+  scenario_id: TS-USERS-002
+  title: Create a user with the same email -> "Email already exists" shown [API]
+  channel: api
+  ac_ids:
+  - AC-002
+  spec_id: SPEC-USERS-001
+  spec_version: '1.0'
+  ac_hash: d8a57b1d988ede4d
+  priority: P2
+  preconditions:
+  - Application is reachable at the configured base URL (API)
+  - Given an authenticated admin and an existing user
+  - A valid access token is obtained for an authenticated admin
+  - A resource with the same unique values already exists (created in test setup)
+  steps:
+  - n: 1
+    action: request
+    target: POST /api/users
+    data: 'name: <valid>, email: <duplicate>, role: <valid>'
+    expected: ''
+  - n: 2
+    action: verify
+    target: ''
+    data: ''
+    expected: Response status is 409, body contains "Email already exists"
+  test_data:
+    name: valid
+    email: duplicate
+    role: valid
+  expected:
+    kind: status
+    value: '409'
+    negate: false
+    status_code: 409
+    body_contains: Email already exists
+    validate_schema: false
+  expected_result: Response status is 409, body contains "Email already exists"
+  start_page: ''
+  api:
+    method: POST
+    path: /api/users
+    operation_id: createUser
+    auth: true
+    precondition: duplicate
+  automation_id: API-TEST-USERS-002
+  tags:
+  - functional
+  - regression
+  status: active
+- id: TC-USERS-003
+  key: AC-003:api:base
+  scenario_id: TS-USERS-003
+  title: Create a user with an empty email -> the API returns 422 [API]
+  channel: api
+  ac_ids:
+  - AC-003
+  spec_id: SPEC-USERS-001
+  spec_version: '1.0'
+  ac_hash: 82a30f3568447392
+  priority: P2
+  preconditions:
+  - Application is reachable at the configured base URL (API)
+  - Given an authenticated admin
+  - A valid access token is obtained for an authenticated admin
+  steps:
+  - n: 1
+    action: request
+    target: POST /api/users
+    data: 'name: <valid>, email: <empty>, role: <valid>'
+    expected: ''
+  - n: 2
+    action: verify
+    target: ''
+    data: ''
+    expected: Response status is 422
+  test_data:
+    name: valid
+    email: empty
+    role: valid
+  expected:
+    kind: status
+    value: '422'
+    negate: false
+    status_code: 422
+    body_contains: ''
+    validate_schema: false
+  expected_result: Response status is 422
+  start_page: ''
+  api:
+    method: POST
+    path: /api/users
+    operation_id: createUser
+    auth: true
+    precondition: none
+  automation_id: API-TEST-USERS-003
+  tags:
+  - functional
+  - regression
+  status: active
+- id: TC-USERS-004
+  key: AC-004:api:base
+  scenario_id: TS-USERS-004
+  title: Retrieve the user by id -> the API returns 200 and the user [API]
+  channel: api
+  ac_ids:
+  - AC-004
+  spec_id: SPEC-USERS-001
+  spec_version: '1.0'
+  ac_hash: efd019eae9c4f559
+  priority: P1
+  preconditions:
+  - Application is reachable at the configured base URL (API)
+  - Given an authenticated admin and an existing user
+  - A valid access token is obtained for an authenticated admin
+  - A resource exists (created through the API in test setup)
+  steps:
+  - n: 1
+    action: request
+    target: GET /api/users/{user_id}
+    data: ''
+    expected: ''
+  - n: 2
+    action: verify
+    target: ''
+    data: ''
+    expected: Response status is 200, body matches the OpenAPI response schema
+  test_data: {}
+  expected:
+    kind: status
+    value: '200'
+    negate: false
+    status_code: 200
+    body_contains: ''
+    validate_schema: true
+  expected_result: Response status is 200, body matches the OpenAPI response schema
+  start_page: ''
+  api:
+    method: GET
+    path: /api/users/{user_id}
+    operation_id: getUser
+    auth: true
+    precondition: existing_resource
+  automation_id: API-TEST-USERS-004
+  tags:
+  - functional
+  - regression
+  - smoke
+  status: active
+- id: TC-USERS-005
+  key: AC-005:api:base
+  scenario_id: TS-USERS-005
+  title: List users -> the API returns 200 and the list of users [API]
+  channel: api
+  ac_ids:
+  - AC-005
+  spec_id: SPEC-USERS-001
+  spec_version: '1.0'
+  ac_hash: 42e52956c8f211a5
+  priority: P1
+  preconditions:
+  - Application is reachable at the configured base URL (API)
+  - Given an authenticated admin
+  - A valid access token is obtained for an authenticated admin
+  steps:
+  - n: 1
+    action: request
+    target: GET /api/users
+    data: ''
+    expected: ''
+  - n: 2
+    action: verify
+    target: ''
+    data: ''
+    expected: Response status is 200, body matches the OpenAPI response schema
+  test_data: {}
+  expected:
+    kind: status
+    value: '200'
+    negate: false
+    status_code: 200
+    body_contains: ''
+    validate_schema: true
+  expected_result: Response status is 200, body matches the OpenAPI response schema
+  start_page: ''
+  api:
+    method: GET
+    path: /api/users
+    operation_id: listUsers
+    auth: true
+    precondition: none
+  automation_id: API-TEST-USERS-005
+  tags:
+  - functional
+  - regression
+  - smoke
+  status: active
+- id: TC-USERS-006
+  key: AC-006:api:base
+  scenario_id: TS-USERS-006
+  title: Update the user with a valid name, email and role -> the API returns 200 and the updated user [API]
+  channel: api
+  ac_ids:
+  - AC-006
+  spec_id: SPEC-USERS-001
+  spec_version: '1.0'
+  ac_hash: e5653eef2f84d321
+  priority: P1
+  preconditions:
+  - Application is reachable at the configured base URL (API)
+  - Given an authenticated admin and an existing user
+  - A valid access token is obtained for an authenticated admin
+  - A resource exists (created through the API in test setup)
+  steps:
+  - n: 1
+    action: request
+    target: PUT /api/users/{user_id}
+    data: 'name: <valid>, email: <valid>, role: <valid>'
+    expected: ''
+  - n: 2
+    action: verify
+    target: ''
+    data: ''
+    expected: Response status is 200, body matches the OpenAPI response schema
+  test_data:
+    name: valid
+    email: valid
+    role: valid
+  expected:
+    kind: status
+    value: '200'
+    negate: false
+    status_code: 200
+    body_contains: ''
+    validate_schema: true
+  expected_result: Response status is 200, body matches the OpenAPI response schema
+  start_page: ''
+  api:
+    method: PUT
+    path: /api/users/{user_id}
+    operation_id: replaceUser
+    auth: true
+    precondition: existing_resource
+  automation_id: API-TEST-USERS-006
+  tags:
+  - functional
+  - regression
+  - smoke
+  status: active
+- id: TC-USERS-007
+  key: AC-007:api:base
+  scenario_id: TS-USERS-007
+  title: Partially update the user role -> the API returns 200 and the updated user [API]
+  channel: api
+  ac_ids:
+  - AC-007
+  spec_id: SPEC-USERS-001
+  spec_version: '1.0'
+  ac_hash: 86e4f98b20ddea13
+  priority: P1
+  preconditions:
+  - Application is reachable at the configured base URL (API)
+  - Given an authenticated admin and an existing user
+  - A valid access token is obtained for an authenticated admin
+  - A resource exists (created through the API in test setup)
+  steps:
+  - n: 1
+    action: request
+    target: PATCH /api/users/{user_id}
+    data: 'role: <valid>'
+    expected: ''
+  - n: 2
+    action: verify
+    target: ''
+    data: ''
+    expected: Response status is 200, body matches the OpenAPI response schema
+  test_data:
+    role: valid
+  expected:
+    kind: status
+    value: '200'
+    negate: false
+    status_code: 200
+    body_contains: ''
+    validate_schema: true
+  expected_result: Response status is 200, body matches the OpenAPI response schema
+  start_page: ''
+  api:
+    method: PATCH
+    path: /api/users/{user_id}
+    operation_id: updateUser
+    auth: true
+    precondition: existing_resource
+  automation_id: API-TEST-USERS-007
+  tags:
+  - functional
+  - regression
+  - smoke
+  status: active
+- id: TC-USERS-008
+  key: AC-008:api:base
+  scenario_id: TS-USERS-008
+  title: Delete the user -> the API returns 204 [API]
+  channel: api
+  ac_ids:
+  - AC-008
+  spec_id: SPEC-USERS-001
+  spec_version: '1.0'
+  ac_hash: 336030c3eb77fbad
+  priority: P1
+  preconditions:
+  - Application is reachable at the configured base URL (API)
+  - Given an authenticated admin and an existing user
+  - A valid access token is obtained for an authenticated admin
+  - A resource exists (created through the API in test setup)
+  steps:
+  - n: 1
+    action: request
+    target: DELETE /api/users/{user_id}
+    data: ''
+    expected: ''
+  - n: 2
+    action: verify
+    target: ''
+    data: ''
+    expected: Response status is 204
+  test_data: {}
+  expected:
+    kind: status
+    value: '204'
+    negate: false
+    status_code: 204
+    body_contains: ''
+    validate_schema: false
+  expected_result: Response status is 204
+  start_page: ''
+  api:
+    method: DELETE
+    path: /api/users/{user_id}
+    operation_id: deleteUser
+    auth: true
+    precondition: existing_resource
+  automation_id: API-TEST-USERS-008
+  tags:
+  - functional
+  - regression
+  - smoke
+  status: active
+- id: TC-USERS-009
+  key: AC-009:api:base
+  scenario_id: TS-USERS-009
+  title: List users -> the API returns 401 [API]
+  channel: api
+  ac_ids:
+  - AC-009
+  spec_id: SPEC-USERS-001
+  spec_version: '1.0'
+  ac_hash: 437d82bb445f2000
+  priority: P2
+  preconditions:
+  - Application is reachable at the configured base URL (API)
+  - Given an unauthenticated client
+  - No Authorization header is sent
+  steps:
+  - n: 1
+    action: request
+    target: GET /api/users
+    data: ''
+    expected: ''
+  - n: 2
+    action: verify
+    target: ''
+    data: ''
+    expected: Response status is 401
+  test_data: {}
+  expected:
+    kind: status
+    value: '401'
+    negate: false
+    status_code: 401
+    body_contains: ''
+    validate_schema: false
+  expected_result: Response status is 401
+  start_page: ''
+  api:
+    method: GET
+    path: /api/users
+    operation_id: listUsers
+    auth: false
+    precondition: none
+  automation_id: API-TEST-USERS-009
+  tags:
+  - functional
+  - regression
+  status: active
+generated_by: offline-rule-engine

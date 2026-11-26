@@ -1,0 +1,233 @@
+# SPEC-USERS-001 - automation
+spec_id: SPEC-USERS-001
+spec_version: '1.0'
+feature: user-management
+framework: python-playwright-pytest-pom + httpx
+ui: null
+api:
+  spec_id: SPEC-USERS-001
+  spec_version: '1.0'
+  tests:
+  - automation_id: API-TEST-USERS-001
+    test_case_id: TC-USERS-001
+    function_name: test_tc_users_001_create_a_user_with_a_valid_name
+    method: POST
+    path: /api/users
+    operation_id: createUser
+    auth: true
+    precondition: none
+    payload:
+      name: valid
+      email: valid
+      role: valid
+    expected_status: 201
+    body_contains: ''
+    validate_schema: true
+    destructive: false
+  - automation_id: API-TEST-USERS-002
+    test_case_id: TC-USERS-002
+    function_name: test_tc_users_002_create_a_user_with_the_same_email
+    method: POST
+    path: /api/users
+    operation_id: createUser
+    auth: true
+    precondition: duplicate
+    payload:
+      name: valid
+      email: duplicate
+      role: valid
+    expected_status: 409
+    body_contains: Email already exists
+    validate_schema: false
+    destructive: false
+  - automation_id: API-TEST-USERS-003
+    test_case_id: TC-USERS-003
+    function_name: test_tc_users_003_create_a_user_with_an_empty_email
+    method: POST
+    path: /api/users
+    operation_id: createUser
+    auth: true
+    precondition: none
+    payload:
+      name: valid
+      email: empty
+      role: valid
+    expected_status: 422
+    body_contains: ''
+    validate_schema: false
+    destructive: false
+  - automation_id: API-TEST-USERS-004
+    test_case_id: TC-USERS-004
+    function_name: test_tc_users_004_retrieve_the_user_by_id
+    method: GET
+    path: /api/users/{user_id}
+    operation_id: getUser
+    auth: true
+    precondition: existing_resource
+    payload: {}
+    expected_status: 200
+    body_contains: ''
+    validate_schema: true
+    destructive: false
+  - automation_id: API-TEST-USERS-005
+    test_case_id: TC-USERS-005
+    function_name: test_tc_users_005_list_users
+    method: GET
+    path: /api/users
+    operation_id: listUsers
+    auth: true
+    precondition: none
+    payload: {}
+    expected_status: 200
+    body_contains: ''
+    validate_schema: true
+    destructive: false
+  - automation_id: API-TEST-USERS-006
+    test_case_id: TC-USERS-006
+    function_name: test_tc_users_006_update_the_user_with_a_valid_name
+    method: PUT
+    path: /api/users/{user_id}
+    operation_id: replaceUser
+    auth: true
+    precondition: existing_resource
+    payload:
+      name: valid
+      email: valid
+      role: valid
+    expected_status: 200
+    body_contains: ''
+    validate_schema: true
+    destructive: false
+  - automation_id: API-TEST-USERS-007
+    test_case_id: TC-USERS-007
+    function_name: test_tc_users_007_partially_update_the_user_role
+    method: PATCH
+    path: /api/users/{user_id}
+    operation_id: updateUser
+    auth: true
+    precondition: existing_resource
+    payload:
+      role: valid
+    expected_status: 200
+    body_contains: ''
+    validate_schema: true
+    destructive: false
+  - automation_id: API-TEST-USERS-008
+    test_case_id: TC-USERS-008
+    function_name: test_tc_users_008_delete_the_user
+    method: DELETE
+    path: /api/users/{user_id}
+    operation_id: deleteUser
+    auth: true
+    precondition: existing_resource
+    payload: {}
+    expected_status: 204
+    body_contains: ''
+    validate_schema: false
+    destructive: true
+  - automation_id: API-TEST-USERS-009
+    test_case_id: TC-USERS-009
+    function_name: test_tc_users_009_list_users
+    method: GET
+    path: /api/users
+    operation_id: listUsers
+    auth: false
+    precondition: none
+    payload: {}
+    expected_status: 401
+    body_contains: ''
+    validate_schema: false
+    destructive: false
+  generated_by: offline-rule-engine
+scripts:
+- automation_id: API-TEST-USERS-001
+  test_case_id: TC-USERS-001
+  ac_ids:
+  - AC-001
+  channel: api
+  file: api/tests/test_user_management_api.py
+  function: test_tc_users_001_create_a_user_with_a_valid_name
+  code_hash: b771b89296d9d6d8
+  ac_hash: 2b87107a58887693
+  spec_version: '1.0'
+- automation_id: API-TEST-USERS-002
+  test_case_id: TC-USERS-002
+  ac_ids:
+  - AC-002
+  channel: api
+  file: api/tests/test_user_management_api.py
+  function: test_tc_users_002_create_a_user_with_the_same_email
+  code_hash: 1678f172c75c6a58
+  ac_hash: d8a57b1d988ede4d
+  spec_version: '1.0'
+- automation_id: API-TEST-USERS-003
+  test_case_id: TC-USERS-003
+  ac_ids:
+  - AC-003
+  channel: api
+  file: api/tests/test_user_management_api.py
+  function: test_tc_users_003_create_a_user_with_an_empty_email
+  code_hash: 5b81ef5d25d7563e
+  ac_hash: 82a30f3568447392
+  spec_version: '1.0'
+- automation_id: API-TEST-USERS-004
+  test_case_id: TC-USERS-004
+  ac_ids:
+  - AC-004
+  channel: api
+  file: api/tests/test_user_management_api.py
+  function: test_tc_users_004_retrieve_the_user_by_id
+  code_hash: aab131c1aaa509bc
+  ac_hash: efd019eae9c4f559
+  spec_version: '1.0'
+- automation_id: API-TEST-USERS-005
+  test_case_id: TC-USERS-005
+  ac_ids:
+  - AC-005
+  channel: api
+  file: api/tests/test_user_management_api.py
+  function: test_tc_users_005_list_users
+  code_hash: dd2d0faeff38a7ba
+  ac_hash: 42e52956c8f211a5
+  spec_version: '1.0'
+- automation_id: API-TEST-USERS-006
+  test_case_id: TC-USERS-006
+  ac_ids:
+  - AC-006
+  channel: api
+  file: api/tests/test_user_management_api.py
+  function: test_tc_users_006_update_the_user_with_a_valid_name
+  code_hash: 03079c1fc844ef00
+  ac_hash: e5653eef2f84d321
+  spec_version: '1.0'
+- automation_id: API-TEST-USERS-007
+  test_case_id: TC-USERS-007
+  ac_ids:
+  - AC-007
+  channel: api
+  file: api/tests/test_user_management_api.py
+  function: test_tc_users_007_partially_update_the_user_role
+  code_hash: e027bacf5329274f
+  ac_hash: 86e4f98b20ddea13
+  spec_version: '1.0'
+- automation_id: API-TEST-USERS-008
+  test_case_id: TC-USERS-008
+  ac_ids:
+  - AC-008
+  channel: api
+  file: api/tests/test_user_management_api.py
+  function: test_tc_users_008_delete_the_user
+  code_hash: 0f6c28a3e91f23e4
+  ac_hash: 336030c3eb77fbad
+  spec_version: '1.0'
+- automation_id: API-TEST-USERS-009
+  test_case_id: TC-USERS-009
+  ac_ids:
+  - AC-009
+  channel: api
+  file: api/tests/test_user_management_api.py
+  function: test_tc_users_009_list_users
+  code_hash: 47ce86b29ca672f0
+  ac_hash: 437d82bb445f2000
+  spec_version: '1.0'
+updated_at: '2026-11-26T15:08:27+00:00'

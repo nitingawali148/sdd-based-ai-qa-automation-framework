@@ -1,0 +1,56 @@
+# Framework configuration. Secrets never live here: they come from .env.
+paths:
+  specifications: specifications
+  requirements: specifications/requirements
+  features: specifications/features
+  approved: specifications/approved
+  changes: specifications/changes
+  schemas: specifications/schemas
+  openapi: specifications/api/openapi.yaml
+  test_data: test_data
+  ui_pages: ui/pages
+  ui_tests: ui/tests
+  api_tests: api/tests
+  staging: output/staging
+  executions: output/executions
+  analysis: output/analysis
+  audit: output/audit
+  reports: reports
+
+approval:
+  # Human approval gates. Stages listed here can never be approved by an agent.
+  required_stages: [spec, test_cases, scripts]
+
+validation:
+  block_on_warnings: false          # warnings are reported; errors always block
+  ac_trace_similarity: 0.55         # min similarity between a spec AC and its requirement AC
+
+versioning:
+  bump_on_change: minor             # minor (1.0 -> 1.1) or major (1.0 -> 2.0)
+  git:
+    enabled: false                  # true -> commit approved snapshots to Git
+    auto_commit: false
+
+execution:
+  timeout_seconds: 900              # whole pytest run
+  per_test_timeout_seconds: 120
+  browser: chromium
+  headed: false
+  capture: {screenshot: only-on-failure, trace: retain-on-failure}
+
+environments:
+  local:
+    base_url: http://127.0.0.1:${SDD_DEMO_PORT}
+    start_demo_app: true
+    production: false
+    allow_destructive: true
+  qa:
+    base_url: https://qa.example.invalid
+    start_demo_app: false
+    production: false
+    allow_destructive: false
+  prod:
+    base_url: https://app.example.invalid
+    start_demo_app: false
+    production: true                # blocked by default
+    allow_destructive: false
